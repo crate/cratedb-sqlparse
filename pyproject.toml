@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "cratedb-sqlparse"
+version = "0.1.0"
+description = ""
+authors = ["surister <surister98@gmail.com>"]
+readme = "README.md"
+packages = [{include = "cratedb_sqlparse"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+antlr4-python3-runtime = "^4.13.1"
+
+
+[tool.poetry.group.dev.dependencies]
+requests = "^2.31.0"
+antlr4-tools = "^0.2.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
