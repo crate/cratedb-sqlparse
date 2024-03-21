@@ -32,6 +32,10 @@ class Statement:
             stop=self.ctx.stop.tokenIndex
         )
 
+    @property
+    def type(self):
+        return self.ctx.start.text
+
     def __repr__(self):
         return f'{self.__class__.__qualname__}<{self.query}>'
 
