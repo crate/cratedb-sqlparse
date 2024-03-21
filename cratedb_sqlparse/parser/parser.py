@@ -32,21 +32,24 @@ class Statement:
             stop=self.ctx.stop.tokenIndex
         )
 
+    def __repr__(self):
+        return f'{self.__class__.__qualname__}<{self.query}>'
 
-def sqlparse(query: str):
+
+def sqlparse(query: str) -> list[Statement]:
     input = CaseInsensitiveStream(query)
     lexer = SqlBaseLexer(input)
     stream = CommonTokenStream(lexer)
     parser = SqlBaseParser(stream)
     tree = parser.statements()
 
-    statements = filter(
-        lambda children: isinstance(children, SqlBaseParser.StatementsContext), tree.children
-    )
-
     # Fixme: We lose the message of the exception when we raise it.
-    for statement in statements:
-        if statement.exception is not None:
+    for statement in tree.children:
+        if hasattr(statement, 'exception') and statement.exception is not None:
             raise statement.exception
+
+    statements = list(filter(
+        lambda children: isinstance(children, SqlBaseParser.DefaultContext), tree.children
+    ))
 
     return [Statement(statement, stream, parser) for statement in statements]
