@@ -49,7 +49,7 @@ def sqlparse(query: str) -> list[Statement]:
             raise statement.exception
 
     statements = list(filter(
-        lambda children: isinstance(children, SqlBaseParser.DefaultContext), tree.children
+        lambda children: isinstance(children, SqlBaseParser.StatementContext), tree.children
     ))
 
     return [Statement(statement, stream, parser) for statement in statements]
