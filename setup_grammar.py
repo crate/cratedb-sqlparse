@@ -14,7 +14,7 @@ GRAMMAR = {
 
 }
 
-PARSER_COMPILE_PATH = pathlib.Path(__file__).parent / 'cratedb-sqlparse/parser'
+PARSER_COMPILE_PATH = pathlib.Path(__file__).parent / 'cratedb_sqlparse/parser'
 
 
 def download_cratedb_grammar():
@@ -31,7 +31,6 @@ def download_cratedb_grammar():
 def compile_grammar():
     """
     Compiles antlr4 files into Python code.
-
     """
     for file in GRAMMAR.values():
         subprocess.run(
@@ -40,11 +39,25 @@ def compile_grammar():
 
 
 def patch_lexer():
-    with open(PARSER_COMPILE_PATH / GRAMMAR['lexer']['filename'].replace('g4', 'py'), 'r+') as f:
-        text = f.read()
-        text = text.replace("""import io.crate.sql.AbstractSqlBaseLexer;""",
-                            '#removed import - Modified automatically by cratedb-sqlparse')
-        f.write(text)
+    REMOVE_LINES = [
+        'import io.crate.sql.AbstractSqlBaseLexer;',
+        """if "." in __name__:
+    from .AbstractSqlBaseLexer import AbstractSqlBaseLexer
+else:
+    from AbstractSqlBaseLexer import AbstractSqlBaseLexer"""
+    ]
+    sqlbaselexer_pyfile = PARSER_COMPILE_PATH / GRAMMAR['lexer']['filename'].replace('g4', 'py')
+    text = pathlib.Path(sqlbaselexer_pyfile).read_text()
+
+    # We remove lines that do not properly work.
+    for text_to_remove in REMOVE_LINES:
+        text = text.replace(text_to_remove, '# Code removed by cratedb_sqlparse.setup_grammar.patch_lexer')
+
+    text = text.replace('class SqlBaseLexer(AbstractSqlBaseLexer):', 'class SqlBaseLexer(Lexer):')
+    pathlib.Path(sqlbaselexer_pyfile).write_text(text)
 
 
-patch_lexer()
+if __name__ == '__main__':
+    download_cratedb_grammar()
+    compile_grammar()
+    patch_lexer()
