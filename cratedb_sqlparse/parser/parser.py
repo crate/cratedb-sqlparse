@@ -1,6 +1,12 @@
 from antlr4 import InputStream, CommonTokenStream
+from antlr4.error.ErrorListener import ErrorListener
+
 from cratedb_sqlparse.parser.SqlBaseParser import SqlBaseParser
 from cratedb_sqlparse.parser.SqlBaseLexer import SqlBaseLexer
+
+
+class ParsingException(Exception):
+    pass
 
 
 class CaseInsensitiveStream(InputStream):
@@ -11,29 +17,46 @@ class CaseInsensitiveStream(InputStream):
         return ord(chr(result).upper())
 
 
+class ExceptionErrorListener(ErrorListener):
+    """
+    Error listener that raises the antlr4 as a Python exception.
+    """
+
+    def syntaxError(self, recognizer, offendingSymbol, line, column, msg, e):
+        raise ParsingException(f'line{line}:{column} {msg}')
+
+
 class Statement:
-    def __init__(self, ctx: SqlBaseParser.StatementsContext, stream, parser):
-        self.ctx = ctx
-        self.stream = stream
-        self.parser = parser
+    """
+    Represents a CrateDB SQL statement.
+    """
+
+    def __init__(self, ctx: SqlBaseParser.StatementContext):
+        self.ctx: SqlBaseParser.StatementContext = ctx
 
     @property
     def tree(self):
-        return self.ctx.toStringTree(recog=self.parser)
+        return self.ctx.toStringTree(recog=self.ctx.parser)
 
     @property
     def original_query(self):
-        return self.stream.getText()
+        return self.ctx.parser.getTokenStream().getText()
 
     @property
-    def query(self):
-        return self.stream.getText(
+    def query(self) -> str:
+        """
+        Returns the query, comments and ';' are not included.
+        """
+        return self.ctx.parser.getTokenStream().getText(
             start=self.ctx.start.tokenIndex,
             stop=self.ctx.stop.tokenIndex
         )
 
     @property
     def type(self):
+        """
+        Returns the type of the Statement, i.e.: 'SELECT, 'UPDATE', 'COPY TO'...
+        """
         return self.ctx.start.text
 
     def __repr__(self):
@@ -41,19 +64,24 @@ class Statement:
 
 
 def sqlparse(query: str) -> list[Statement]:
+    """
+    Parses a string into SQL `Statement`.
+    """
     input = CaseInsensitiveStream(query)
     lexer = SqlBaseLexer(input)
+    lexer.removeErrorListeners()
     stream = CommonTokenStream(lexer)
+
     parser = SqlBaseParser(stream)
+    parser.removeErrorListeners()
+    parser.addErrorListener(ExceptionErrorListener())
+
     tree = parser.statements()
 
-    # Fixme: We lose the message of the exception when we raise it.
-    for statement in tree.children:
-        if hasattr(statement, 'exception') and statement.exception is not None:
-            raise statement.exception
-
+    # At this point, all errors are already raised; it's seasonably safe to assume
+    # that the statements are valid.
     statements = list(filter(
         lambda children: isinstance(children, SqlBaseParser.StatementContext), tree.children
     ))
 
-    return [Statement(statement, stream, parser) for statement in statements]
+    return [Statement(statement) for statement in statements]
