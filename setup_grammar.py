@@ -41,11 +41,7 @@ def compile_grammar():
 def patch_lexer():
     REMOVE_LINES = [
         'import io.crate.sql.AbstractSqlBaseLexer;',
-        """if "." in __name__:
-    from .AbstractSqlBaseLexer import AbstractSqlBaseLexer
-else:
-    from AbstractSqlBaseLexer import AbstractSqlBaseLexer"""
-    ]
+        ]
     sqlbaselexer_pyfile = PARSER_COMPILE_PATH / GRAMMAR['lexer']['filename'].replace('g4', 'py')
     text = pathlib.Path(sqlbaselexer_pyfile).read_text()
 
@@ -53,7 +49,6 @@ else:
     for text_to_remove in REMOVE_LINES:
         text = text.replace(text_to_remove, '# Code removed by cratedb_sqlparse.setup_grammar.patch_lexer')
 
-    text = text.replace('class SqlBaseLexer(AbstractSqlBaseLexer):', 'class SqlBaseLexer(Lexer):')
     pathlib.Path(sqlbaselexer_pyfile).write_text(text)
 
 

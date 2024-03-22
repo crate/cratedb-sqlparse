@@ -5,6 +5,27 @@ from cratedb_sqlparse.parser.SqlBaseParser import SqlBaseParser
 from cratedb_sqlparse.parser.SqlBaseLexer import SqlBaseLexer
 
 
+def BEGIN_DOLLAR_QUOTED_STRING_action(self, localctx, actionIndex):
+    if actionIndex == 0:
+        self.tags.append(self.text)
+
+
+def END_DOLLAR_QUOTED_STRING_action(self, localctx, actionIndex):
+    if actionIndex == 1:
+        self.tags.pop()
+
+
+def END_DOLLAR_QUOTED_STRING_sempred(self, localctx, predIndex):
+    if predIndex == 0:
+        return self.tags[0] == self.text
+
+
+SqlBaseLexer.tags = []
+SqlBaseLexer.BEGIN_DOLLAR_QUOTED_STRING_action = BEGIN_DOLLAR_QUOTED_STRING_action
+SqlBaseLexer.END_DOLLAR_QUOTED_STRING_action = END_DOLLAR_QUOTED_STRING_action
+SqlBaseLexer.END_DOLLAR_QUOTED_STRING_sempred = END_DOLLAR_QUOTED_STRING_sempred
+
+
 class ParsingException(Exception):
     pass
 
@@ -19,7 +40,7 @@ class CaseInsensitiveStream(InputStream):
 
 class ExceptionErrorListener(ErrorListener):
     """
-    Error listener that raises the antlr4 as a Python exception.
+    Error listener that raises the antlr4 error as a Python exception.
     """
 
     def syntaxError(self, recognizer, offendingSymbol, line, column, msg, e):
