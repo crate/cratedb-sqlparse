@@ -57,10 +57,16 @@ class Statement:
 
     @property
     def tree(self):
+        """
+        Returns the String representation of the Tree in LISP format.
+        """
         return self.ctx.toStringTree(recog=self.ctx.parser)
 
     @property
     def original_query(self):
+        """
+        The original query that was fed into `sqlparse`, including semicolons and comments.
+        """
         return self.ctx.parser.getTokenStream().getText()
 
     @property
