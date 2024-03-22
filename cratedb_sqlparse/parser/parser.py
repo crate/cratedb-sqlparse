@@ -37,7 +37,7 @@ class Statement:
         return self.ctx.start.text
 
     def __repr__(self):
-        return f'{self.__class__.__qualname__}<{self.query}>'
+        return f'{self.__class__.__qualname__}<{self.query if len(self.query) < 15 else self.query[:15] + "..."}>'
 
 
 def sqlparse(query: str) -> list[Statement]:
