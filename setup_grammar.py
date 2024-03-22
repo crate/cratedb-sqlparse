@@ -14,7 +14,7 @@ GRAMMAR = {
 
 }
 
-PARSER_COMPILE_PATH = pathlib.Path(__file__).parent / 'cratedb_sqlparse/parser'
+PARSER_COMPILE_PATH = pathlib.Path(__file__).parent / 'cratedb_sqlparse/parser/generated_parser'
 
 
 def download_cratedb_grammar():

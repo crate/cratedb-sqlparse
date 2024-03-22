@@ -1,8 +1,8 @@
 from antlr4 import InputStream, CommonTokenStream
 from antlr4.error.ErrorListener import ErrorListener
 
-from cratedb_sqlparse.parser.SqlBaseParser import SqlBaseParser
-from cratedb_sqlparse.parser.SqlBaseLexer import SqlBaseLexer
+from cratedb_sqlparse.parser.generated_parser.SqlBaseParser import SqlBaseParser
+from cratedb_sqlparse.parser.generated_parser.SqlBaseLexer import SqlBaseLexer
 
 
 def BEGIN_DOLLAR_QUOTED_STRING_action(self, localctx, actionIndex):

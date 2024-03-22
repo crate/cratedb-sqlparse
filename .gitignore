@@ -165,6 +165,5 @@ cython_debug/
 *.interp
 *.g4
 
-*SqlBaseLexer.py
-*SqlBaseParser.py
+
 *SqlBaseParserListener.py
