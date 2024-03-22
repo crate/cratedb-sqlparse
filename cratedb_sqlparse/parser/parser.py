@@ -1,4 +1,4 @@
-from antlr4 import InputStream, CommonTokenStream
+from antlr4 import InputStream, CommonTokenStream, Token
 from antlr4.error.ErrorListener import ErrorListener
 
 from cratedb_sqlparse.parser.generated_parser.SqlBaseParser import SqlBaseParser
@@ -33,7 +33,7 @@ class ParsingException(Exception):
 class CaseInsensitiveStream(InputStream):
     def LA(self, offset: int):
         result = super().LA(offset)
-        if result <= 0 or result == 59:  # 59 -> ;
+        if result <= 0 or result == Token.EOF:
             return result
         return ord(chr(result).upper())
 
