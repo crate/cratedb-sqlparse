@@ -1,0 +1,12 @@
+{
+  "name": "cratedb-sqlparse",
+  "version": "0.0.1",
+  "type": "module",
+  "files": ["parser"],
+  "scripts":  {
+    "tests": ""
+  },
+  "dependencies": {
+    "antlr4": "^4.13.1-patch-1"
+  }
+}
