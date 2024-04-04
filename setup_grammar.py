@@ -1,5 +1,7 @@
 import pathlib
 import subprocess
+from enum import Enum
+
 import requests
 
 GRAMMAR = {
@@ -14,7 +16,12 @@ GRAMMAR = {
 
 }
 
-PARSER_COMPILE_PATH = pathlib.Path(__file__).parent / 'cratedb_sqlparse/parser/generated_parser'
+PARSER_COMPILE_PATH = pathlib.Path(__file__).parent
+
+
+class Target(Enum):
+    js = 'JavaScript'
+    python = 'Python3'
 
 
 def download_cratedb_grammar():
@@ -28,31 +35,36 @@ def download_cratedb_grammar():
             f.write(response.text)
 
 
-def compile_grammar():
+def compile_grammar(target: Target, path: str):
     """
     Compiles antlr4 files into Python code.
     """
     for file in GRAMMAR.values():
         subprocess.run(
-            ['antlr4', '-Dlanguage=Python3', '-o', str(PARSER_COMPILE_PATH), file['filename']]
+            [
+                'antlr4', f'-Dlanguage={target.value}',
+                '-o', str(PARSER_COMPILE_PATH / path),
+                file['filename']
+            ]
         )
 
 
 def patch_lexer():
     REMOVE_LINES = [
         'import io.crate.sql.AbstractSqlBaseLexer;',
-        ]
+    ]
     sqlbaselexer_pyfile = PARSER_COMPILE_PATH / GRAMMAR['lexer']['filename'].replace('g4', 'py')
     text = pathlib.Path(sqlbaselexer_pyfile).read_text()
 
     # We remove lines that do not properly work.
     for text_to_remove in REMOVE_LINES:
-        text = text.replace(text_to_remove, '# Code removed by cratedb_sqlparse.setup_grammar.patch_lexer')
+        text = text.replace(text_to_remove,
+                            '# Code removed by cratedb_sqlparse.setup_grammar.patch_lexer')
 
     pathlib.Path(sqlbaselexer_pyfile).write_text(text)
 
 
 if __name__ == '__main__':
     download_cratedb_grammar()
-    compile_grammar()
+    compile_grammar(Target.js, 'cratedb_sqlparse_js/parser/generated_parser')
     patch_lexer()
