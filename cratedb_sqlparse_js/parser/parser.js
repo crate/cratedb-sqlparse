@@ -2,9 +2,31 @@ import SqlBaseLexer from "./generated_parser/SqlBaseLexer.js";
 import SqlBaseParser from "./generated_parser/SqlBaseParser.js";
 import {CommonTokenStream, ErrorListener, InputStream, Token} from "antlr4";
 
-class ParsingError extends Error {
-
+function BEGIN_DOLLAR_QUOTED_STRING_action(localctx, actionIndex) {
+    if (actionIndex === 0) {
+        this.tags.push(this.text);
+    }
 }
+
+
+function END_DOLLAR_QUOTED_STRING_action(localctx, actionIndex) {
+    if (actionIndex === 1) {
+        this.tags.pop();
+    }
+}
+
+function END_DOLLAR_QUOTED_STRING_sempred(localctx, predIndex) {
+    if (predIndex === 0) {
+        return this.tags[0] === this.text;
+    }
+}
+
+SqlBaseLexer.prototype.tags = [];
+SqlBaseLexer.prototype.BEGIN_DOLLAR_QUOTED_STRING_action = BEGIN_DOLLAR_QUOTED_STRING_action;
+SqlBaseLexer.prototype.END_DOLLAR_QUOTED_STRING_action = END_DOLLAR_QUOTED_STRING_action;
+SqlBaseLexer.prototype.END_DOLLAR_QUOTED_STRING_sempred = END_DOLLAR_QUOTED_STRING_sempred;
+
+class ParsingError extends Error {}
 
 class CaseInsensitiveStream extends InputStream {
     LA(offset) {
