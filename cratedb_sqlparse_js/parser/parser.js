@@ -1,6 +1,6 @@
 import SqlBaseLexer from "./generated_parser/SqlBaseLexer.js";
 import SqlBaseParser from "./generated_parser/SqlBaseParser.js";
-import {CommonTokenStream, ErrorListener, InputStream, Token} from "antlr4";
+import {CommonTokenStream, ErrorListener, InputStream, Interval, Token} from "antlr4";
 
 function BEGIN_DOLLAR_QUOTED_STRING_action(localctx, actionIndex) {
     if (actionIndex === 0) {
@@ -26,7 +26,8 @@ SqlBaseLexer.prototype.BEGIN_DOLLAR_QUOTED_STRING_action = BEGIN_DOLLAR_QUOTED_S
 SqlBaseLexer.prototype.END_DOLLAR_QUOTED_STRING_action = END_DOLLAR_QUOTED_STRING_action;
 SqlBaseLexer.prototype.END_DOLLAR_QUOTED_STRING_sempred = END_DOLLAR_QUOTED_STRING_sempred;
 
-class ParsingError extends Error {}
+export class ParsingError extends Error {
+}
 
 class CaseInsensitiveStream extends InputStream {
     LA(offset) {
@@ -44,6 +45,20 @@ class ExceptionErrorListener extends ErrorListener {
     }
 }
 
+class Statement {
+    constructor(ctx) {
+        this.query = ctx.parser.getTokenStream().getText(
+            new Interval(
+                ctx.start.tokenIndex,
+                ctx.stop.tokenIndex)
+        )
+        this.original_query = ctx.parser.getTokenStream().getText()
+        this.tree = ctx.toStringTree(null, ctx.parser)
+        this.type = ctx.start.text
+        this.ctx = ctx
+    }
+}
+
 export function sqlparse(query) {
     const input = new CaseInsensitiveStream(query);
     const lexer = new SqlBaseLexer(input);
@@ -56,6 +71,5 @@ export function sqlparse(query) {
 
     const tree = parser.statements();
 
-    return tree.children;
-
+    return tree.children.filter((children) => children instanceof SqlBaseParser.StatementContext).map((children) => new Statement(children))
 }
