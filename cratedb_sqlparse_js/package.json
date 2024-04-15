@@ -1,14 +1,35 @@
 {
   "name": "cratedb-sqlparse",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "type": "module",
   "files": [
-    "parser"
+    "dist"
+  ],
+  "license": "MIT",
+  "main": "./dist/sqlparse.umd.cjs",
+  "module": "./dist/sqlparse.js",
+  "exports": {
+    ".": {
+      "import": "./dist/sqlparse.js",
+      "require": "./dist/sqlparse.umd.cjs"
+    }
+  },
+  "keywords": [
+    "sql",
+    "parse",
+    "cratedb",
+    "cratedb-sql",
+    "parse-cratedb",
+    "sql-cratedb-dialect",
+    "sqlparse",
+    "sql-dialect"
   ],
   "scripts": {
-    "test": "vitest"
+    "test": "vitest",
+    "build": "vite build"
   },
   "devDependencies": {
+    "vite": "^5.2.8",
     "vitest": "^1.4.0"
   },
   "dependencies": {
