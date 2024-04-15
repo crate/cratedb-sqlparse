@@ -26,7 +26,8 @@ SqlBaseLexer.prototype.BEGIN_DOLLAR_QUOTED_STRING_action = BEGIN_DOLLAR_QUOTED_S
 SqlBaseLexer.prototype.END_DOLLAR_QUOTED_STRING_action = END_DOLLAR_QUOTED_STRING_action;
 SqlBaseLexer.prototype.END_DOLLAR_QUOTED_STRING_sempred = END_DOLLAR_QUOTED_STRING_sempred;
 
-export class ParsingError extends Error {
+export class ParseError extends Error {
+    name = 'ParseError'
 }
 
 class CaseInsensitiveStream extends InputStream {
@@ -41,7 +42,7 @@ class CaseInsensitiveStream extends InputStream {
 
 class ExceptionErrorListener extends ErrorListener {
     syntaxError(recognizer, offendingSymbol, line, column, msg, e) {
-        throw new ParsingError(`line${line}:${column} ${msg}`);
+        throw new ParseError(`line${line}:${column} ${msg}`);
     }
 }
 
