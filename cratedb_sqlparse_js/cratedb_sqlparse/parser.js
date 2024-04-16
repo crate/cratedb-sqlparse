@@ -51,7 +51,8 @@ class Statement {
         this.query = ctx.parser.getTokenStream().getText(
             new Interval(
                 ctx.start.tokenIndex,
-                ctx.stop.tokenIndex)
+                ctx.stop.tokenIndex,
+            )
         )
         this.original_query = ctx.parser.getTokenStream().getText()
         this.tree = ctx.toStringTree(null, ctx.parser)

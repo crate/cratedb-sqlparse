@@ -1,5 +1,6 @@
-import {sqlparse, ParsingError} from "../parser/parser.js";
+
 import {expect, test} from 'vitest'
+import {sqlparse} from "../cratedb_sqlparse/index.js";
 
 test('sqlparse parses one statement', () => {
     const ORIGINAL_QUERY = 'SELECT 1;'
