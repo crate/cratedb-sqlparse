@@ -166,4 +166,9 @@ cython_debug/
 *.g4
 
 
+*SqlBaseLexer.js
+*SqlBaseParser.js
+
+*SqlBaseLexer.py
+*SqlBaseParser.py
 *SqlBaseParserListener.py

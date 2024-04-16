@@ -482,33 +482,6 @@ export default class SqlBaseParserListener extends antlr4.tree.ParseTreeListener
 	}
 
 
-	// Enter a parse tree produced by SqlBaseParser#dropServer.
-	enterDropServer(ctx) {
-	}
-
-	// Exit a parse tree produced by SqlBaseParser#dropServer.
-	exitDropServer(ctx) {
-	}
-
-
-	// Enter a parse tree produced by SqlBaseParser#dropForeignTable.
-	enterDropForeignTable(ctx) {
-	}
-
-	// Exit a parse tree produced by SqlBaseParser#dropForeignTable.
-	exitDropForeignTable(ctx) {
-	}
-
-
-	// Enter a parse tree produced by SqlBaseParser#dropUserMapping.
-	enterDropUserMapping(ctx) {
-	}
-
-	// Exit a parse tree produced by SqlBaseParser#dropUserMapping.
-	exitDropUserMapping(ctx) {
-	}
-
-
 	// Enter a parse tree produced by SqlBaseParser#addColumn.
 	enterAddColumn(ctx) {
 	}
@@ -1877,15 +1850,6 @@ export default class SqlBaseParserListener extends antlr4.tree.ParseTreeListener
 	}
 
 
-	// Enter a parse tree produced by SqlBaseParser#createForeignTable.
-	enterCreateForeignTable(ctx) {
-	}
-
-	// Exit a parse tree produced by SqlBaseParser#createForeignTable.
-	exitCreateForeignTable(ctx) {
-	}
-
-
 	// Enter a parse tree produced by SqlBaseParser#createBlobTable.
 	enterCreateBlobTable(ctx) {
 	}
@@ -1931,15 +1895,6 @@ export default class SqlBaseParserListener extends antlr4.tree.ParseTreeListener
 	}
 
 
-	// Enter a parse tree produced by SqlBaseParser#createUserMapping.
-	enterCreateUserMapping(ctx) {
-	}
-
-	// Exit a parse tree produced by SqlBaseParser#createUserMapping.
-	exitCreateUserMapping(ctx) {
-	}
-
-
 	// Enter a parse tree produced by SqlBaseParser#createRole.
 	enterCreateRole(ctx) {
 	}
@@ -1973,42 +1928,6 @@ export default class SqlBaseParserListener extends antlr4.tree.ParseTreeListener
 
 	// Exit a parse tree produced by SqlBaseParser#createSubscription.
 	exitCreateSubscription(ctx) {
-	}
-
-
-	// Enter a parse tree produced by SqlBaseParser#createServer.
-	enterCreateServer(ctx) {
-	}
-
-	// Exit a parse tree produced by SqlBaseParser#createServer.
-	exitCreateServer(ctx) {
-	}
-
-
-	// Enter a parse tree produced by SqlBaseParser#mappedUser.
-	enterMappedUser(ctx) {
-	}
-
-	// Exit a parse tree produced by SqlBaseParser#mappedUser.
-	exitMappedUser(ctx) {
-	}
-
-
-	// Enter a parse tree produced by SqlBaseParser#kvOptions.
-	enterKvOptions(ctx) {
-	}
-
-	// Exit a parse tree produced by SqlBaseParser#kvOptions.
-	exitKvOptions(ctx) {
-	}
-
-
-	// Enter a parse tree produced by SqlBaseParser#kvOption.
-	enterKvOption(ctx) {
-	}
-
-	// Exit a parse tree produced by SqlBaseParser#kvOption.
-	exitKvOption(ctx) {
 	}
 
 
