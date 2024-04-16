@@ -123,8 +123,11 @@ def set_version(target: Antlr4Target, version: str):
     with open(target_path / index_file, "a") as f:
         f.write(f"{variable} = {version}\n")
 
-# if __name__ == '__main__':
-#     download_cratedb_grammar('5.6.4')
-#     compile_grammar(Antlr4Target.js)
-#     patch_lexer(Antlr4Target.js)
-set_version(Antlr4Target.js, '5.45.4')
+
+if __name__ == '__main__':
+    version = '5.6.4'
+    target = Antlr4Target.python
+    download_cratedb_grammar(version)
+    compile_grammar(target)
+    patch_lexer(target)
+    set_version(target, version)
