@@ -34,7 +34,7 @@ def test_sqlparse_several_statements():
 
 
 def test_sqlparse_dollar_string():
-    query = "SELECT $$crate's performance$$"
+    query = "update test set a=$$test;test$$"
     r = sqlparse(query)
 
     assert r[0].query == query

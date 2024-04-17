@@ -17,7 +17,7 @@ build_options = {
         Antlr4Target.python: 'cratedb_sqlparse_py'
     },
 
-    'antlr4_compiled_target_subdir': 'parser/generated_parser',
+    'antlr4_compiled_target_subdir': 'cratedb_sqlparse/generated_parser',
 
     # List of '.g4' files that will be built
     'files': [
