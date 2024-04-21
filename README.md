@@ -55,17 +55,24 @@ complete and the default reference.
 The generated parser is not uploaded to the repository since it's huge, to use the package locally or
 to build a different version use the build script.
 
-At the end of the build script `setup_grammar.py` the target and the versions can be modified.
+#### Clone the project
+`git clone git@github.com:crate/cratedb-sqlparse.git`
 
-The script needs two dependencies `pip install antlr4-python3-runtime requests` you can either
-install those manually or use the `pyproject.toml` from the python target, both options can be used to build targets.
+#### Install the dependencies
+`pip install antlr4-python3-runtime requests`
 
-```python
-if __name__ == '__main__':
-    version = '5.6.4'
-    target = Antlr4Target.python
-    download_cratedb_grammar(version)
-    compile_grammar(target)
-    patch_lexer(target)
-    set_version(target, version)
-```
+#### Run the build script
+`python3 setup_grammar.py`
+
+
+> At the end of the build script `setup_grammar.py` the target and the CrateDB version can be modified.
+>
+> ```python
+> if __name__ == '__main__':
+>    version = '5.6.4'
+>    target = Antlr4Target.python
+>    download_cratedb_grammar(version)
+>    compile_grammar(target)
+>    patch_lexer(target)
+>    set_version(target, version)
+>```
