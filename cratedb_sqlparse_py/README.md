@@ -1,4 +1,4 @@
-# cratedb_sqlparse
+# CrateDB SQL Parser for Python
 
 This package provides utilities to validate and split SQL statements specifically designed for CrateDB.
 
@@ -35,4 +35,15 @@ print(select_query.tree)
 
 sqlparse('SUUULECT * FROM sys.shards')
 # cratedb_sqlparse.parser.parser.ParsingException: line1:0 mismatched input 'SUUULECT' expecting {'SELECT', 'DEALLOCATE', ...}
+```
+
+
+## Development
+```shell
+git clone https://github.com/crate/cratedb-sqlparse
+cd cratedb-sqlparse/cratedb_sqlparse_py
+python3 -m venv .venv
+source .venv/bin/activate
+pip install --editable='.[develop,generate,release,test]'
+poe check
 ```
