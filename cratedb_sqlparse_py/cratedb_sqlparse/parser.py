@@ -1,3 +1,5 @@
+from typing import List
+
 from antlr4 import InputStream, CommonTokenStream, Token
 from antlr4.error.ErrorListener import ErrorListener
 
@@ -90,7 +92,7 @@ class Statement:
         return f'{self.__class__.__qualname__}<{self.query if len(self.query) < 15 else self.query[:15] + "..."}>'
 
 
-def sqlparse(query: str) -> list[Statement]:
+def sqlparse(query: str) -> List[Statement]:
     """
     Parses a string into SQL `Statement`.
     """
