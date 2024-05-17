@@ -1,11 +1,10 @@
 # cratedb-sqlparse
 
 `Antlr4` is a parser generator for reading, processing and executing text, there are several
-target languages (Java, Python, JavaScript, Dart...) available. CrateDB uses the Java target.
+target languages (Java, Python, JavaScript, Dart) available. CrateDB uses the Java target.
 
 The repository holds libraries/packages created from some of those available languages, so
-far: `Python` and `JavaScript`.
-More might be added if needed in the future.
+far: `Python` and `JavaScript`. More might be added if needed in the future.
 
 These libraries allow you to parse Crate's SQL dialect without sending it to a CrateDB instance.
 
@@ -50,29 +49,23 @@ exceptions as error listener, dollar strings and any new one. See past commits t
 implemented in Python and Javascript, remember that CrateDB's SQLParser written in Java is the most
 complete and the default reference.
 
-## Building locally & using a different CrateDB version.
+## Building locally & using a different CrateDB version
 
 The generated parser is not uploaded to the repository since it's huge, to use the package locally or
 to build a different version use the build script.
 
-#### Clone the project
-`git clone git@github.com:crate/cratedb-sqlparse.git`
+### Acquire sources
+```shell
+git clone git@github.com:crate/cratedb-sqlparse.git
+cd cratedb-sqlparse
+```
 
-#### Install the dependencies
-`pip install antlr4-python3-runtime requests`
+### Install dependencies
+```
+pip install -r requirements.txt
+```
 
-#### Run the build script
-`python3 setup_grammar.py`
-
-
-> At the end of the build script `setup_grammar.py` the target and the CrateDB version can be modified.
->
-> ```python
-> if __name__ == '__main__':
->    version = '5.6.4'
->    target = Antlr4Target.python
->    download_cratedb_grammar(version)
->    compile_grammar(target)
->    patch_lexer(target)
->    set_version(target, version)
->```
+### Generate grammar files
+```shell
+poe generate
+```
