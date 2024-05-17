@@ -1,4 +1,3 @@
-from .parser import sqlparse, ParsingException
+from .parser import ParsingException, sqlparse
 
-__all__ = ['sqlparse', 'ParsingException']
-
+__all__ = ["sqlparse", "ParsingException"]

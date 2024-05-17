@@ -1,10 +1,10 @@
 from typing import List
 
-from antlr4 import InputStream, CommonTokenStream, Token
+from antlr4 import CommonTokenStream, InputStream, Token
 from antlr4.error.ErrorListener import ErrorListener
 
-from cratedb_sqlparse.generated_parser.SqlBaseParser import SqlBaseParser
 from cratedb_sqlparse.generated_parser.SqlBaseLexer import SqlBaseLexer
+from cratedb_sqlparse.generated_parser.SqlBaseParser import SqlBaseParser
 
 
 def BEGIN_DOLLAR_QUOTED_STRING_action(self, localctx, actionIndex):
@@ -17,9 +17,10 @@ def END_DOLLAR_QUOTED_STRING_action(self, localctx, actionIndex):
         self.tags.pop()
 
 
-def END_DOLLAR_QUOTED_STRING_sempred(self, localctx, predIndex):
+def END_DOLLAR_QUOTED_STRING_sempred(self, localctx, predIndex) -> bool:
     if predIndex == 0:
         return self.tags[0] == self.text
+    return False
 
 
 SqlBaseLexer.tags = []
@@ -46,7 +47,7 @@ class ExceptionErrorListener(ErrorListener):
     """
 
     def syntaxError(self, recognizer, offendingSymbol, line, column, msg, e):
-        raise ParsingException(f'line{line}:{column} {msg}')
+        raise ParsingException(f"line{line}:{column} {msg}")
 
 
 class Statement:
@@ -76,10 +77,7 @@ class Statement:
         """
         Returns the query, comments and ';' are not included.
         """
-        return self.ctx.parser.getTokenStream().getText(
-            start=self.ctx.start.tokenIndex,
-            stop=self.ctx.stop.tokenIndex
-        )
+        return self.ctx.parser.getTokenStream().getText(start=self.ctx.start.tokenIndex, stop=self.ctx.stop.tokenIndex)
 
     @property
     def type(self):
@@ -96,8 +94,8 @@ def sqlparse(query: str) -> List[Statement]:
     """
     Parses a string into SQL `Statement`.
     """
-    input = CaseInsensitiveStream(query)
-    lexer = SqlBaseLexer(input)
+    input_ = CaseInsensitiveStream(query)
+    lexer = SqlBaseLexer(input_)
     lexer.removeErrorListeners()
     stream = CommonTokenStream(lexer)
 
@@ -109,8 +107,6 @@ def sqlparse(query: str) -> List[Statement]:
 
     # At this point, all errors are already raised; it's seasonably safe to assume
     # that the statements are valid.
-    statements = list(filter(
-        lambda children: isinstance(children, SqlBaseParser.StatementContext), tree.children
-    ))
+    statements = list(filter(lambda children: isinstance(children, SqlBaseParser.StatementContext), tree.children))
 
     return [Statement(statement) for statement in statements]
