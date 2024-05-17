@@ -1,0 +1,3 @@
+antlr4-tools<0.3
+poethepoet<0.26
+requests<3

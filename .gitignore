@@ -164,11 +164,3 @@ cython_debug/
 *.tokens
 *.interp
 *.g4
-
-
-*SqlBaseLexer.js
-*SqlBaseParser.js
-
-*SqlBaseLexer.py
-*SqlBaseParser.py
-*SqlBaseParserListener.py
