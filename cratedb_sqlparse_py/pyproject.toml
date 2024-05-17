@@ -116,6 +116,12 @@ install_types = true
 ignore_missing_imports = true
 implicit_optional = true
 non_interactive = true
+# FIXME: Does not work?
+exclude = [
+  "^SqlBaseLexer\\.py$",
+  "cratedb_sqlparse/generated_parser/",
+  "cratedb_sqlparse/generated_parser/SqlBaseParser.py",
+]
 
 [tool.pytest.ini_options]
 addopts = """
@@ -197,17 +203,17 @@ check = [
 ]
 
 format = [
-  # { cmd = "ruff format ." },
+  { cmd = "ruff format ." },
   # Configure Ruff not to auto-fix (remove!) unused variables (F841) and `print` statements (T201).
-  # { cmd = "ruff check --fix --ignore=ERA --ignore=F401 --ignore=F841 --ignore=T20 ." },
+  { cmd = "ruff check --fix --ignore=ERA --ignore=F401 --ignore=F841 --ignore=T20 ." },
   { cmd = "pyproject-fmt --keep-full-version pyproject.toml" },
 ]
 
 lint = [
-  # { cmd = "ruff format --check ." },
-  # { cmd = "ruff check ." },
+  { cmd = "ruff format --check ." },
+  { cmd = "ruff check ." },
   { cmd = "validate-pyproject pyproject.toml" },
-  # { cmd = "mypy" },
+  # { cmd = "mypy ." },
 ]
 
 release = [
