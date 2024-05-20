@@ -76,7 +76,7 @@ develop = [
   "poethepoet<0.26",
   "pyproject-fmt<2.2",
   "ruff<0.4",
-  "validate-pyproject<0.17",
+  "validate-pyproject<0.19",
 ]
 generate = [
   "antlr4-tools<0.3",
