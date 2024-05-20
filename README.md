@@ -8,8 +8,8 @@ far: `Python` and `JavaScript`. More might be added if needed in the future.
 
 These libraries allow you to parse Crate's SQL dialect without sending it to a CrateDB instance.
 
-- `Python`: https://github.com/crate/cratedb-sqlparse/tree/master/cratedb_sqlparse_py
-- `Javascript`: https://github.com/crate/cratedb-sqlparse/tree/master/cratedb_sqlparse_js
+- `Python`: https://github.com/crate/cratedb-sqlparse/tree/main/cratedb_sqlparse_py
+- `Javascript`: https://github.com/crate/cratedb-sqlparse/tree/main/cratedb_sqlparse_js
 
 ## Example:
 
