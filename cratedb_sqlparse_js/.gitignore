@@ -130,3 +130,6 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
+
+*SqlBaseLexer.js
+*SqlBaseParser.js
