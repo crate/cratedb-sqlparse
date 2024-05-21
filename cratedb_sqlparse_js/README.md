@@ -1,15 +1,15 @@
-# Cratedb sqlparse - javascript edition.
+# CrateDB SQL Parser for JavaScript
 
-![NPM License](https://img.shields.io/npm/l/cratedb-sqlparse?style=for-the-badge)
-![NPM Version](https://img.shields.io/npm/v/cratedb-sqlparse?style=for-the-badge)
-![NPM Unpacked Size](https://img.shields.io/npm/unpacked-size/cratedb-sqlparse?style=for-the-badge)
-![NPM Type Definitions](https://img.shields.io/npm/types/cratedb-sqlparse?style=for-the-badge)
+![NPM Version](https://img.shields.io/npm/v/cratedb-sqlparse)
+![NPM Unpacked Size](https://img.shields.io/npm/unpacked-size/cratedb-sqlparse)
+![NPM Type Definitions](https://img.shields.io/npm/types/cratedb-sqlparse)
+![NPM License](https://img.shields.io/npm/l/cratedb-sqlparse)
 
-CrateDB sqlparser for javascript, compiled from antlr4 Javascript compile target.
+CrateDB SQL Parser for JavaScript, compiled from antlr4 JavaScript compile target.
 
 ### Simple usage
 ```javascript
-import { sqlparse } from cratedb-sqlparse;
+import { sqlparse } from "cratedb-sqlparse";
 
 const query = `
 SELECT * FROM SYS.SHARDS;
@@ -41,6 +41,6 @@ Optional features:
 
 ### Errors
 Errors are thrown as 'ParseError' e.g:
-```javascript
+```text
 ParseError: line2:9 mismatched input 'ROM' expecting {<EOF>, ';'}
 ```
