@@ -19,7 +19,7 @@ def generate():
         # Test module for availability.
         find_spec("cratedb_sqlparse.generated_parser.SqlBaseParser")
     except ImportError:
-        subprocess.check_call([sys.executable, SETUP_GRAMMAR], cwd=HERE.parent.parent)  # noqa: S603
+        subprocess.check_call([sys.executable, SETUP_GRAMMAR, "python"], cwd=HERE.parent.parent)  # noqa: S603
 
     try:
         # Test module for availability.
