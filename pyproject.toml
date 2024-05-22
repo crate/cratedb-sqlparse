@@ -1,5 +1,6 @@
 [tool.poe.tasks]
 
 generate = [
-  { cmd = "python setup_grammar.py" },
+  { cmd = "python setup_grammar.py python" },
+  { cmd = "python setup_grammar.py javascript" },
 ]
