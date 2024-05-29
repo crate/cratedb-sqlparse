@@ -2,6 +2,7 @@ import datetime
 import logging
 import subprocess
 import sys
+import re
 from enum import Enum
 from pathlib import Path
 
@@ -137,9 +138,18 @@ def set_version(target: Antlr4Target, version: str):
         index_file = 'index.js'
         variable = 'export const __cratedb_version__'
 
-    # FIXME: Need to apply "replace" instead of "append"?
-    with open(target_path / index_file, "a") as f:
-        f.write(f"{variable} = {version}\n")
+    with open(target_path / index_file, "r+") as f:
+        content = f.read()
+
+        # Removes the current content on disk.
+        f.seek(0)
+        f.truncate()
+
+        updated_content = re.sub(f'({variable} = )"(.*)"', r'\1' + version, content)
+
+        f.write(updated_content)
+
+    logger.info(f'Updated  {variable} to {version} in {index_file}')
 
 
 if __name__ == '__main__':
@@ -150,14 +160,17 @@ if __name__ == '__main__':
     TODO: Improve efficiency by generating runtime parser for all implemented languages at once.
     """
     setup_logging()
+
     input_target = sys.argv[1]
     version = '5.6.4'
+
     if input_target.startswith("py"):
         target = Antlr4Target.python
     elif input_target.startswith("js") or input_target.startswith("java"):
         target = Antlr4Target.js
     else:
         raise NotImplementedError(f"Parser generator for target {input_target} not implemented")
+
     download_cratedb_grammar(version)
     compile_grammar(target)
     patch_lexer(target)
