@@ -5,13 +5,14 @@ import {
 import {
     defineConfig
 } from 'vite'
+import packageJson from './package.json';
 
 export default defineConfig({
     build: {
         lib: {
             // Could also be a dictionary or array of multiple entry points
             entry: resolve(__dirname, 'cratedb_sqlparse/index.js'),
-            name: '@cratedb/cratedb-sqlparse', // the proper extensions will be added
+            name: packageJson.name, // the proper extensions will be added
             fileName: 'sqlparse',
         }, rollupOptions: {
             // make sure to externalize deps that shouldn't be bundled
