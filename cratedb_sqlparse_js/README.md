@@ -37,7 +37,7 @@ console.log(queries[0].original_query)
 ```
 
 ### CrateDB version
-You can programmatically check the CrateDB version the package was compiled ford in `index.js`
+You can programmatically check the CrateDB version the package was compiled for in `index.js`
 
 ```javascript
 import { __cratedb_version__ } from "@cratedb/cratedb-sqlparse";
