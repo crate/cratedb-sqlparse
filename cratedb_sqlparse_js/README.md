@@ -1,9 +1,14 @@
 # CrateDB SQL Parser for JavaScript
 
-![NPM Version](https://img.shields.io/npm/v/cratedb-sqlparse)
-![NPM Unpacked Size](https://img.shields.io/npm/unpacked-size/cratedb-sqlparse)
-![NPM Type Definitions](https://img.shields.io/npm/types/cratedb-sqlparse)
-![NPM License](https://img.shields.io/npm/l/cratedb-sqlparse)
+![NPM License](https://img.shields.io/npm/l/@cratedb/cratedb-sqlparse)
+![NPM Version](https://img.shields.io/npm/v/@cratedb/cratedb-sqlparse)
+![NPM Downloads](https://img.shields.io/npm/dm/@cratedb/cratedb-sqlparse)
+
+[![Tests](https://github.com/crate/cratedb-sqlparse/actions/workflows/javascript.yml/badge.svg)](https://github.com/crate/cratedb-sqlparse/actions/workflows/javascript.yml)
+
+![NPM Unpacked Size](https://img.shields.io/npm/unpacked-size/@cratedb/cratedb-sqlparse)
+![NPM Type Definitions](https://img.shields.io/npm/types/@cratedb/cratedb-sqlparse)
+
 
 CrateDB SQL Parser for JavaScript, compiled from antlr4 JavaScript compile target.
 
