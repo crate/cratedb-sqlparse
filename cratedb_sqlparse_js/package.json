@@ -1,5 +1,5 @@
 {
-  "name": "cratedb-sqlparse",
+  "name": "@cratedb/cratedb-sqlparse",
   "version": "0.0.2",
   "type": "module",
   "files": [
