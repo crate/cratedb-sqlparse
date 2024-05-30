@@ -1,11 +1,35 @@
 {
   "name": "@cratedb/cratedb-sqlparse",
   "version": "0.0.2",
+  "author": {
+    "name": "Ivan Sanchez Valencia",
+    "email": "ivan.sanchezvalencia@crate.io",
+    "url": "https://github.com/surister"
+  },
+  "private": false,
   "type": "module",
-  "files": [
-    "dist"
-  ],
   "license": "Apache-2.0",
+  "keywords": [
+    "antlr4",
+    "antlr4 grammar",
+    "cratedb",
+    "grammar",
+    "sql",
+    "sql dialect",
+    "sql grammar",
+    "sql parser",
+    "sql parsing"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/crate/cratedb-sqlparse"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
+  },
+  "files": [
+    "./dist"
+  ],
   "main": "./dist/sqlparse.umd.cjs",
   "module": "./dist/sqlparse.js",
   "exports": {
@@ -14,25 +38,15 @@
       "require": "./dist/sqlparse.umd.cjs"
     }
   },
-  "keywords": [
-    "sql",
-    "parse",
-    "cratedb",
-    "cratedb-sql",
-    "parse-cratedb",
-    "sql-cratedb-dialect",
-    "sqlparse",
-    "sql-dialect"
-  ],
-  "scripts": {
-    "test": "vitest run",
-    "build": "vite build"
+  "dependencies": {
+    "antlr4": "^4.13.1-patch-1"
   },
   "devDependencies": {
     "vite": "^5.2.11",
     "vitest": "^1.6.0"
   },
-  "dependencies": {
-    "antlr4": "^4.13.1-patch-1"
+  "scripts": {
+    "test": "vitest run",
+    "build": "vite build"
   }
 }
