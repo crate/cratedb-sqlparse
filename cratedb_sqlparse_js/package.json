@@ -5,7 +5,7 @@
   "files": [
     "dist"
   ],
-  "license": "MIT",
+  "license": "Apache-2.0",
   "main": "./dist/sqlparse.umd.cjs",
   "module": "./dist/sqlparse.js",
   "exports": {
