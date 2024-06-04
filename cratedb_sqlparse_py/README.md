@@ -27,7 +27,7 @@ query = """
     SELECT * FROM SYS.SHARDS;
     INSERT INTO doc.tbl VALUES (1);
 """
-statements = sqlparse(query)
+statements = sqlparse(query, raise_exception=True)
 
 print(len(statements))
 # 2
@@ -43,17 +43,28 @@ print(select_query.type)
 print(select_query.tree)
 # (statement (query (queryNoWith (queryTerm (querySpec SELECT (selectItem *) FROM (relation (aliasedRelation (relationPrimary (table (qname (ident (unquotedIdent SYS)) . (ident (unquotedIdent (nonReserved SHARDS)))))))))))))
 
-sqlparse('SUUULECT * FROM sys.shards')
-# cratedb_sqlparse.parser.parser.ParsingException: line1:0 mismatched input 'SUUULECT' expecting {'SELECT', 'DEALLOCATE', ...}
+sqlparse('SEEELECT * FROM sys.shards')
+# cratedb_sqlparse.parser.parser.ParsingException: line1:0 mismatched input 'SEEELECT' expecting {'SELECT', 'DEALLOCATE', ...}
 ```
 
 
 ## Development
 ```shell
 git clone https://github.com/crate/cratedb-sqlparse
+
 cd cratedb-sqlparse/cratedb_sqlparse_py
 python3 -m venv .venv
 source .venv/bin/activate
 pip install --editable='.[develop,generate,release,test]'
 poe check
+```
+
+### Run only tests
+```shell
+poe test
+```
+
+### Run only one test
+```shell
+poe test -k test_sqlparse_collects_exceptions_2
 ```
