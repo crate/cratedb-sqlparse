@@ -1,6 +1,3 @@
-import pytest
-
-
 def test_sqlparser_one_statement(query=None):
     from cratedb_sqlparse import sqlparse
 
