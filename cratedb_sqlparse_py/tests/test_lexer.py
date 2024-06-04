@@ -44,13 +44,20 @@ def test_sqlparse_dollar_string():
     assert r[0].query == query
 
 
-def test_sqlparse_raises_exception():
-    from cratedb_sqlparse import ParsingException, sqlparse
+def test_sqlparse_multiquery_edge_case():
+    # Test for https://github.com/crate/cratedb-sqlparse/issues/28,
+    # if this ends up parsing 3 statements, we can change this test,
+    # it's here so we can programmatically track if the behavior changes.
+    from cratedb_sqlparse import sqlparse
 
-    query = "SALUT MON AMIE"
+    query = """
+    SELECT A FROM tbl1 where ;
+    SELEC 1;
+    SELECT D, A FROM tbl1 WHERE;
+"""
 
-    with pytest.raises(ParsingException):
-        sqlparse(query)
+    statements = sqlparse(query)
+    assert len(statements) == 1
 
 
 def test_sqlparse_is_case_insensitive():

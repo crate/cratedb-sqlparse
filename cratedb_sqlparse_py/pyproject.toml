@@ -205,7 +205,7 @@ check = [
 format = [
   { cmd = "ruff format ." },
   # Configure Ruff not to auto-fix (remove!) unused variables (F841) and `print` statements (T201).
-  { cmd = "ruff check --fix --ignore=ERA --ignore=F401 --ignore=F841 --ignore=T20 ." },
+  { cmd = "ruff check --fix --ignore=ERA --ignore=F401 --ignore=F841 --ignore=T20 --ignore=E501 ." },
   { cmd = "pyproject-fmt --keep-full-version pyproject.toml" },
 ]
 
