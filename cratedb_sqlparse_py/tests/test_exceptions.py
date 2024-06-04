@@ -9,8 +9,8 @@ def test_exception_message():
         SELECT A, B, C, D FROM tbl1;
         SELECT D, A FROM tbl1 WHERE;
     """)
-    expected_message = "InputMismatchException[line 2:9 mismatched input 'SELEC' expecting {'SELECT', 'DEALLOCATE', 'FETCH', 'END', 'WITH', 'CREATE', 'ALTER', 'KILL', 'CLOSE', 'BEGIN', 'START', 'COMMIT', 'ANALYZE', 'DISCARD', 'EXPLAIN', 'SHOW', 'OPTIMIZE', 'REFRESH', 'RESTORE', 'DROP', 'INSERT', 'VALUES', 'DELETE', 'UPDATE', 'SET', 'RESET', 'COPY', 'GRANT', 'DENY', 'REVOKE', 'DECLARE'}]"
-    expected_message_2 = "\n         SELEC 1;\n         ^^^^^\n        SELECT A, B, C, D FROM tbl1;\n        SELECT D, A FROM tbl1 WHERE;\n    "
+    expected_message = "InputMismatchException[line 2:9 mismatched input 'SELEC' expecting {'SELECT', 'DEALLOCATE', 'FETCH', 'END', 'WITH', 'CREATE', 'ALTER', 'KILL', 'CLOSE', 'BEGIN', 'START', 'COMMIT', 'ANALYZE', 'DISCARD', 'EXPLAIN', 'SHOW', 'OPTIMIZE', 'REFRESH', 'RESTORE', 'DROP', 'INSERT', 'VALUES', 'DELETE', 'UPDATE', 'SET', 'RESET', 'COPY', 'GRANT', 'DENY', 'REVOKE', 'DECLARE'}]"  # noqa
+    expected_message_2 = "\n         SELEC 1;\n         ^^^^^\n        SELECT A, B, C, D FROM tbl1;\n        SELECT D, A FROM tbl1 WHERE;\n    "  # noqa
     assert r[0].exception.error_message == expected_message
     assert r[0].exception.original_query_with_error_marked == expected_message_2
 
