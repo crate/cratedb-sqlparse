@@ -45,8 +45,8 @@ see https://github.com/antlr/antlr4/blob/master/doc/targets.md.
 Add the new target and paths to the build script, see `setup_grammar.py`.
 
 There are several features that would need to be implemented, like case-insensitive input stream, native
-exceptions as error listener, dollar strings and any new one. See past commits to see how they were
-implemented in Python and Javascript, remember that CrateDB's SQLParser written in Java is the most
+exceptions as error listener, dollar-strings and any new one. See past commits to see how they were
+implemented in Python and Javascript, remember that [CrateDB'S SQLParser](https://github.com/crate/crate/tree/master/libs/sql-parser/src/main/java/io/crate/sql/parser) written in Java is the most
 complete and the default reference.
 
 ## Building locally & using a different CrateDB version
