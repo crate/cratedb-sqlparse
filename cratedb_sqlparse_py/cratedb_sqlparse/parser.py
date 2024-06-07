@@ -46,7 +46,6 @@ class ParsingException(Exception):
         query = self.offending_token.source[1].strdata
         offending_token_text: str = query[self.offending_token.start : self.offending_token.stop + 1]
         query_lines: list = query.split("\n")
-
         offending_line: str = query_lines[self.line - 1]
 
         # White spaces from the beginning of the offending line to the offending text, so the '^'
@@ -72,10 +71,10 @@ class ParsingException(Exception):
         return self.offending_token.line
 
     def __repr__(self):
-        return f"{type(self.e).__qualname__}"
+        return type(self.e).__qualname__
 
     def __str__(self):
-        return repr(self)
+        return self.error_message
 
 
 class CaseInsensitiveStream(InputStream):
@@ -90,6 +89,8 @@ class ExceptionErrorListener(ErrorListener):
     """
     Error listener that raises the antlr4 error as a Python exception.
     """
+
+    errors = ()  # Dummy for passing tests, should not be used.
 
     def syntaxError(self, recognizer, offendingSymbol, line, column, msg, e):
         error = ParsingException(
@@ -166,12 +167,15 @@ class Statement:
 def find_suitable_error(statement, errors):
     for error in errors[:]:
         # We clean the error_query of ';' and spaces because ironically,
-        # we can get the full query in the error handler but not in the context.
+        # we can get the full query in the error but not in the parsed statement.
         error_query = error.query
         if error_query.endswith(";"):
             error_query = error_query[: len(error_query) - 1]
 
-        if error_query.lstrip().rstrip() == statement.query:
+        error_query = error_query.lstrip().rstrip()
+
+        # If a good match error_query contains statement.query
+        if statement.query in error_query:
             statement.exception = error
             errors.pop(errors.index(error))
 
@@ -222,7 +226,7 @@ def sqlparse(query: str, raise_exception: bool = False) -> List[Statement]:
 
         if len(error_listener.errors) > 1:
             logging.error(
-                "Could not match errors to queries, too much ambiguity, open an issue with this error and the query."
+                "Could not match errors to queries, too much ambiguity, open an issue with this " "error and the query."
             )
 
     return statements

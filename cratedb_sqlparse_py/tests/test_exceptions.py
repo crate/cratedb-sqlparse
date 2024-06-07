@@ -24,6 +24,12 @@ def test_sqlparse_raises_exception():
         sqlparse(query, raise_exception=True)
 
 
+def test_sqlparse_not_raise_exception():
+    from cratedb_sqlparse import sqlparse
+
+    sqlparse("SELECT COUNT(*) FROM doc.tbl f WHERE f.id = 1;", raise_exception=True)
+
+
 def test_sqlparse_collects_exception():
     from cratedb_sqlparse import sqlparse
 
