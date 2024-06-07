@@ -49,7 +49,7 @@ print(select_query.tree)
 ```
 
 ### Exceptions and errors.
-By default exceptions are stored in `statement.error`
+By default exceptions are stored in `statement.exception`
 ```python
 from cratedb_sqlparse import sqlparse
 
