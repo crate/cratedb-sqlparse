@@ -106,9 +106,6 @@ Note:
 It will only raise the first exception if finds, even if you pass in several statements.
 
 
-
-
-
 ## Development
 
 ### Set up environment

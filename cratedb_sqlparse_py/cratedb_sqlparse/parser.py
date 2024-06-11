@@ -1,9 +1,11 @@
+import dataclasses
 import logging
 from typing import List
 
 from antlr4 import CommonTokenStream, InputStream, RecognitionException, Token
 from antlr4.error.ErrorListener import ErrorListener
 
+from cratedb_sqlparse.AstBuilder import AstBuilder
 from cratedb_sqlparse.generated_parser.SqlBaseLexer import SqlBaseLexer
 from cratedb_sqlparse.generated_parser.SqlBaseParser import SqlBaseParser
 
@@ -123,6 +125,17 @@ class ExceptionCollectorListener(ErrorListener):
         self.errors.append(error)
 
 
+@dataclasses.dataclass
+class Metadata:
+    """
+    Represents the metadata of the query, the actual interesting parts of the query such as:
+    table, schema, columns, options...
+    """
+
+    schema: str = None
+    table_name: str = None
+
+
 class Statement:
     """
     Represents a CrateDB SQL statement.
@@ -131,6 +144,7 @@ class Statement:
     def __init__(self, ctx: SqlBaseParser.StatementContext, exception: ParsingException = None):
         self.ctx: SqlBaseParser.StatementContext = ctx
         self.exception = exception
+        self.metadata = Metadata()
 
     @property
     def tree(self):
@@ -202,9 +216,9 @@ def sqlparse(query: str, raise_exception: bool = False) -> List[Statement]:
 
     statements = []
     for statement_context in statements_context:
-        _stmt = Statement(statement_context)
-        find_suitable_error(_stmt, error_listener.errors)
-        statements.append(_stmt)
+        stmt = Statement(statement_context)
+        find_suitable_error(stmt, error_listener.errors)
+        statements.append(stmt)
 
     else:
         # We might still have error(s) that we couldn't match with their origin statement,
@@ -212,21 +226,28 @@ def sqlparse(query: str, raise_exception: bool = False) -> List[Statement]:
         # the error.query will be 'SELCT' instead of 'SELCT 1'.
         if len(error_listener.errors) == 1:
             # This case has an edge case where we hypothetically assign the
-            # wrong error to a statement, for example:
+            # wrong error to a statement, for example,
             #     SELECT A FROM tbl1;
             #     SELEC 1;
-            # This would match both conditionals, this however is protected by
+            #          ^
+            # This would match both conditionals, this however, is protected
             # by https://github.com/crate/cratedb-sqlparse/issues/28, but might
             # change in the future.
             error = error_listener.errors[0]
-            for _stmt in statements:
-                if _stmt.exception is None and error.query in _stmt.query:
-                    _stmt.exception = error
+            for stmt in statements:
+                if stmt.exception is None and error.query in stmt.query:
+                    stmt.exception = error
                     break
 
         if len(error_listener.errors) > 1:
             logging.error(
                 "Could not match errors to queries, too much ambiguity, open an issue with this " "error and the query."
             )
+
+    # We extract the metadata and enrich every Statement's `metadata`.
+    stmt_enricher = AstBuilder()
+
+    for stmt in statements:
+        stmt_enricher.enrich(stmt)
 
     return statements
