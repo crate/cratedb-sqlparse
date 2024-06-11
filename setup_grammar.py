@@ -78,7 +78,9 @@ def compile_grammar(target: Antlr4Target):
         logger.info(f"Compiling grammar: {outfile}")
         subprocess.check_call(
             [
-                'antlr4', f'-Dlanguage={target.value}',
+                'antlr4',
+                f'-Dlanguage={target.value}',
+                '-visitor',
                 '-o',
                 str(PARSER_COMPILE_PATH / base_dir / sub_dir),
                 file['filename']
