@@ -10,13 +10,16 @@
 
 [![Status](https://img.shields.io/pypi/status/cratedb-sqlparse.svg)](https://pypi.org/project/cratedb-sqlparse/)
 
-This package provides utilities to validate and split SQL statements specifically designed for CrateDB.
+This package provides utilities to validate and split SQL statements specifically designed for
+CrateDB.
 
-It is built upon CrateDB's antlr4 grammar, ensuring accurate parsing tailored to CrateDB's SQL dialect.
+It is built upon CrateDB's antlr4 grammar, ensuring accurate parsing tailored to CrateDB's SQL
+dialect.
 
 It draws inspiration from `sqlparse`.
 
 ## Installation.
+
 ```shell
 pip install cratedb-sqlparse
 ```
@@ -24,6 +27,7 @@ pip install cratedb-sqlparse
 ## Usage.
 
 ### Simple example
+
 ```python
 from cratedb_sqlparse import sqlparse
 
@@ -49,7 +53,9 @@ print(select_query.tree)
 ```
 
 ### Exceptions and errors.
+
 By default exceptions are stored in `statement.exception`
+
 ```python
 from cratedb_sqlparse import sqlparse
 
@@ -64,18 +70,16 @@ stmt = statements[0]
 if stmt.exception:
     print(stmt.exception.error_message)
     # InputMismatchException[line 2:31 mismatched input 'HERE' expecting {<EOF>, ';'}]
-    
+
     print(stmt.exception.original_query_with_error_marked)
     # SELECT COUNT(*) FROM doc.tbl f HERE f.id = 1;
     #                                ^^^^
     # 
     # INSERT INTO doc.tbl VALUES (1, 23, 4);
-    
+
     print(stmt.exception.offending_token.text)
     # HERE
-
 ```
-
 
 In some situations, you might want sqlparse to raise an exception.
 
@@ -87,28 +91,83 @@ from cratedb_sqlparse import sqlparse
 sqlparse('SELECT COUNT(*) FROM doc.tbl f WHERE .id = 1;', raise_exception=True)
 
 # cratedb_sqlparse.parser.ParsingException: NoViableAltException[line 1:37 no viable alternative at input 'SELECT COUNT(*) FROM doc.tbl f WHERE .']
-``` 
+```
 
 Catch the exception:
-```python
 
+```python
 from cratedb_sqlparse import sqlparse, ParsingException
 
 try:
     t = sqlparse('SELECT COUNT(*) FROM doc.tbl f WHERE .id = 1;', raise_exception=True)[0]
 except ParsingException:
     print('Catched!')
-
 ```
 
 Note:
 
-It will only raise the first exception if finds, even if you pass in several statements.
+It will only raise the first exception it finds, even if you pass in several statements.
+
+### Query metadata.
+
+Query metadata can be read with `statement.metadata`
+
+```python
+from cratedb_sqlparse import sqlparse
+
+stmt = sqlparse("SELECT A, B FROM doc.tbl12")
+
+print(stmt.metadata)
+# Metadata(schema='doc', table_name='tbl12', interpolated_properties={}, with_properties={})
+```
+
+#### Query properties.
+
+Properties defined within a `WITH` statement, `statement.metadata.with_properties`.
+
+
+```python
+from cratedb_sqlparse import sqlparse
+
+stmt = sqlparse("""
+    CREATE TABLE doc.tbl12 (A TEXT) WITH (
+      "allocation.max_retries" = 5,
+      "blocks.metadata" = false
+    );
+""")[0]
+
+print(stmt.metadata)
+# Metadata(schema='doc', table_name='tbl12', interpolated_properties={}, with_properties={'allocation.max_retries': '5', 'blocks.metadata': 'false'})
+```
+
+#### Interpolated properties.
+
+Interpolated properties are properties without a real defined value, marked with a dollar string,  `metadata.interpolated_properties`
+
+```python
+from cratedb_sqlparse import sqlparse
+
+stmt = sqlparse("""
+    CREATE TABLE doc.tbl12 (A TEXT) WITH (
+    "allocation.max_retries" = 5,
+    "blocks.metadata" = $1
+);
+""")[0]
+
+print(stmt.metadata)
+# Metadata(schema='doc', table_name='tbl12', interpolated_properties={'blocks.metadata': '$1'}, with_properties={'allocation.max_retries': '5', 'blocks.metadata': '$1'})
+```
+
+In this case, `blocks.metadata` will be in `with_properties` and `interpolated_properties` as well.
+
+For values to be picked up they need to start with a dollar `'$'` and be preceded by integers, e.g. `'$1'`, `'$123'` -
+`'$123abc'` would not be valid.
 
 
 ## Development
 
 ### Set up environment
+
 ```shell
 git clone https://github.com/crate/cratedb-sqlparse
 
@@ -125,21 +184,25 @@ Everytime you open a shell again you would need to run `source .venv/bin/activat
 to use `poe` commands.
 
 ### Run lint and tests with coverage.
+
 ```shell
 poe check
 ```
 
 ### Run only tests
+
 ```shell
 poe test
 ```
 
 ### Run a specific test.
+
 ```shell
 poe test -k test_sqlparse_collects_exceptions_2
 ```
 
 ### Run linter
+
 ```shell
 poe lint
 ```

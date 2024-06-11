@@ -43,6 +43,26 @@ class AstBuilder(SqlBaseParserVisitor):
         self.stmt.metadata.table_name = name
         self.stmt.metadata.schema = schema
 
+    def visitGenericProperties(self, ctx: SqlBaseParser.GenericPropertiesContext):
+        node_properties = ctx.genericProperty()
+
+        properties = {}
+        interpolated_properties = {}
+
+        for property in node_properties:
+            key = self.get_text(property.ident())
+            value = self.get_text(property.expr())
+
+            properties[key] = value
+
+            if value[0] == "$":
+                # It might be a interpolated value, e.g. '$1'
+                if value[1:].isdigit():
+                    interpolated_properties[key] = value
+
+        self.stmt.metadata.with_properties = properties
+        self.stmt.metadata.interpolated_properties = interpolated_properties
+
     def get_text(self, node) -> t.Optional[str]:
         """Gets the text representation of the node or None if it doesn't have one"""
         if node:
