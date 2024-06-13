@@ -32,7 +32,7 @@ class AstBuilder(SqlBaseParserVisitor):
 
     def visitTableName(self, ctx: SqlBaseParser.TableNameContext):
         fqn = ctx.qname()
-        parts = self.get_text(fqn).replace('"', "").split(".")
+        parts = self.get_text(fqn).split(".")
 
         if len(parts) == 1:
             name = parts[0]
@@ -49,13 +49,13 @@ class AstBuilder(SqlBaseParserVisitor):
         properties = {}
         interpolated_properties = {}
 
-        for property in node_properties:
-            key = self.get_text(property.ident())
-            value = self.get_text(property.expr())
+        for property_ in node_properties:
+            key = self.get_text(property_.ident())
+            value = self.get_text(property_.expr())
 
             properties[key] = value
 
-            if value[0] == "$":
+            if value and value[0] == "$":
                 # It might be a interpolated value, e.g. '$1'
                 if value[1:].isdigit():
                     interpolated_properties[key] = value
@@ -66,5 +66,5 @@ class AstBuilder(SqlBaseParserVisitor):
     def get_text(self, node) -> t.Optional[str]:
         """Gets the text representation of the node or None if it doesn't have one"""
         if node:
-            return node.getText()
+            return node.getText().replace("'", "").replace('"', "")
         return node
