@@ -134,7 +134,7 @@ class Metadata:
 
     schema: str = None
     table_name: str = None
-    interpolated_properties: dict = dataclasses.field(default_factory=dict)
+    parameterized_properties: dict = dataclasses.field(default_factory=dict)
     with_properties: dict = dataclasses.field(default_factory=dict)
 
 

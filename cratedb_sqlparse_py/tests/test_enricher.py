@@ -60,7 +60,7 @@ def test_table_with_properties():
     assert stmt.metadata.with_properties["key3"] == "true"
 
 
-def test_with_with_interpolated_properties():
+def test_with_with_parameterized_properties():
     from cratedb_sqlparse import sqlparse
 
     query = "CREATE TABLE tbl (A TEXT) WITH ('key' = $1, 'key2' = '$2')"
@@ -69,7 +69,7 @@ def test_with_with_interpolated_properties():
     keys = ["key", "key2"]
 
     # Has all the keys.
-    assert all(x in stmt.metadata.interpolated_properties for x in keys)
+    assert all(x in stmt.metadata.parameterized_properties for x in keys)
     assert all(x in stmt.metadata.with_properties for x in keys)
     assert stmt.metadata.with_properties["key"] == "$1"
     assert stmt.metadata.with_properties["key2"] == "$2"
