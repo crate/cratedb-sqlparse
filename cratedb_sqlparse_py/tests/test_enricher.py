@@ -52,12 +52,9 @@ def test_table_with_properties():
     query = "CREATE TABLE tbl (A TEXT) WITH ('key' = 'val', 'key2' = 2, 'key3' = true)"
 
     stmt = sqlparse(query)[0]
-    keys = ["key", "key2"]
+    expected = {'key': 'val', 'key2': '2', 'key3': 'true'}
 
-    assert all(x in stmt.metadata.with_properties for x in keys)
-    assert stmt.metadata.with_properties["key"] == "val"
-    assert stmt.metadata.with_properties["key2"] == "2"
-    assert stmt.metadata.with_properties["key3"] == "true"
+    assert stmt.metadata.with_properties == expected
 
 
 def test_with_with_parameterized_properties():
@@ -66,10 +63,8 @@ def test_with_with_parameterized_properties():
     query = "CREATE TABLE tbl (A TEXT) WITH ('key' = $1, 'key2' = '$2')"
 
     stmt = sqlparse(query)[0]
-    keys = ["key", "key2"]
+    expected = {'key': 'val', 'key2': '2'}
 
     # Has all the keys.
-    assert all(x in stmt.metadata.parameterized_properties for x in keys)
-    assert all(x in stmt.metadata.with_properties for x in keys)
-    assert stmt.metadata.with_properties["key"] == "$1"
-    assert stmt.metadata.with_properties["key2"] == "$2"
+    assert stmt.metadata.with_properties == expected
+    assert stmt.metadata.parameterized_properties == expected
