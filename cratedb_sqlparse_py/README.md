@@ -118,7 +118,7 @@ from cratedb_sqlparse import sqlparse
 stmt = sqlparse("SELECT A, B FROM doc.tbl12")
 
 print(stmt.metadata)
-# Metadata(schema='doc', table_name='tbl12', interpolated_properties={}, with_properties={})
+# Metadata(schema='doc', table_name='tbl12', parameterized_properties={}, with_properties={})
 ```
 
 #### Query properties.
@@ -137,12 +137,12 @@ stmt = sqlparse("""
 """)[0]
 
 print(stmt.metadata)
-# Metadata(schema='doc', table_name='tbl12', interpolated_properties={}, with_properties={'allocation.max_retries': '5', 'blocks.metadata': 'false'})
+# Metadata(schema='doc', table_name='tbl12', parameterized_properties={}, with_properties={'allocation.max_retries': '5', 'blocks.metadata': 'false'})
 ```
 
-#### Interpolated properties.
+#### Parameterized properties.
 
-Interpolated properties are properties without a real defined value, marked with a dollar string,  `metadata.interpolated_properties`
+Parameterized properties are properties without a real defined value, marked with a dollar string,  `metadata.parameterized_properties`
 
 ```python
 from cratedb_sqlparse import sqlparse
@@ -155,10 +155,10 @@ stmt = sqlparse("""
 """)[0]
 
 print(stmt.metadata)
-# Metadata(schema='doc', table_name='tbl12', interpolated_properties={'blocks.metadata': '$1'}, with_properties={'allocation.max_retries': '5', 'blocks.metadata': '$1'})
+# Metadata(schema='doc', table_name='tbl12', parameterized_properties={'blocks.metadata': '$1'}, with_properties={'allocation.max_retries': '5', 'blocks.metadata': '$1'})
 ```
 
-In this case, `blocks.metadata` will be in `with_properties` and `interpolated_properties` as well.
+In this case, `blocks.metadata` will be in `with_properties` and `parameterized_properties` as well.
 
 For values to be picked up they need to start with a dollar `'$'` and be preceded by integers, e.g. `'$1'`, `'$123'` -
 `'$123abc'` would not be valid.

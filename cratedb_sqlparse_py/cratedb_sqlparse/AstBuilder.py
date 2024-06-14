@@ -47,7 +47,7 @@ class AstBuilder(SqlBaseParserVisitor):
         node_properties = ctx.genericProperty()
 
         properties = {}
-        interpolated_properties = {}
+        parameterized_properties = {}
 
         for property_ in node_properties:
             key = self.get_text(property_.ident())
@@ -56,12 +56,12 @@ class AstBuilder(SqlBaseParserVisitor):
             properties[key] = value
 
             if value and value[0] == "$":
-                # It might be a interpolated value, e.g. '$1'
+                # It might be a parameterized value, e.g. '$1'
                 if value[1:].isdigit():
-                    interpolated_properties[key] = value
+                    parameterized_properties[key] = value
 
         self.stmt.metadata.with_properties = properties
-        self.stmt.metadata.interpolated_properties = interpolated_properties
+        self.stmt.metadata.parameterized_properties = parameterized_properties
 
     def get_text(self, node) -> t.Optional[str]:
         """Gets the text representation of the node or None if it doesn't have one"""

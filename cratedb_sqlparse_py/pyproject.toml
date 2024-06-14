@@ -103,6 +103,7 @@ line-length = 120
 branch = false
 omit = [
   "tests/*",
+  "cratedb_sqlparse/generated_parser/*"
 ]
 source = ["cratedb_sqlparse"]
 
