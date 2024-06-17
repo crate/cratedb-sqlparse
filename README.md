@@ -11,7 +11,27 @@ These libraries allow you to parse Crate's SQL dialect without sending it to a C
 - `Python`: https://github.com/crate/cratedb-sqlparse/tree/main/cratedb_sqlparse_py
 - `Javascript`: https://github.com/crate/cratedb-sqlparse/tree/main/cratedb_sqlparse_js
 
-## Example:
+
+## Install
+
+You can install the package in both its Python and JavaScript variants.
+
+- https://pypi.org/project/cratedb-sqlparse/
+- https://www.npmjs.com/package/@cratedb/cratedb-sqlparse
+
+### Python
+
+```shell
+pip install cratedb-sqlparse
+```
+
+### JavaScript
+```shell
+npm install @cratedb/cratedb-sqlparse
+```
+
+
+## Synopsis
 
 ```python
 from cratedb_sqlparse import sqlparse
@@ -49,23 +69,8 @@ exceptions as error listener, dollar-strings and any new one. See past commits t
 implemented in Python and Javascript, remember that [CrateDB'S SQLParser](https://github.com/crate/crate/tree/master/libs/sql-parser/src/main/java/io/crate/sql/parser) written in Java is the most
 complete and the default reference.
 
-## Building locally & using a different CrateDB version
+## Development
 
-The generated parser is not uploaded to the repository since it's huge, to use the package locally or
-to build a different version use the build script.
-
-### Acquire sources
-```shell
-git clone git@github.com:crate/cratedb-sqlparse.git
-cd cratedb-sqlparse
-```
-
-### Install dependencies
-```
-pip install -r requirements.txt
-```
-
-### Generate grammar files
-```shell
-poe generate
-```
+The generated parser is not uploaded to the repository because it is huge.
+To use the package locally or to build a different version use the build script.
+Further information can be found in the [developer guide](DEVELOP.md).
