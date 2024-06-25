@@ -28,9 +28,10 @@ SqlBaseLexer.prototype.END_DOLLAR_QUOTED_STRING_sempred = END_DOLLAR_QUOTED_STRI
 export class ParseError extends Error {
     name = 'ParseError'
 
-    constructor(message, offending_token) {
-        super(message);
-        this.msg = message;
+    constructor(query, msg, offending_token, e) {
+        super(msg);
+        this.query = query;
+        this.msg = msg;
         this.offending_token = offending_token;
         this.line = this.getLine();
         this.column = this.getColumn();
@@ -78,12 +79,13 @@ class CaseInsensitiveStream extends InputStream {
 }
 
 class ExceptionErrorListener extends ErrorListener {
+    errors = []
     syntaxError(recognizer, offendingSymbol, line, column, msg, e) {
         throw new ParseError(
+            e.ctx.parser.getTokenStream().getText(e.ctx.start, e.offendingToken.tokenIndex),
             msg,
             offendingSymbol,
-            e,
-            e.ctx.parser.getTokenStream().getText(e.ctx.start, e.offendingToken.tokenIndex)
+            e
         )
     }
 }
@@ -97,10 +99,10 @@ class ExceptionCollectorListener extends ErrorListener {
     syntaxError(recognizer, offendingSymbol, line, column, msg, e) {
         super.syntaxError(recognizer, offendingSymbol, line, column, msg, e);
         const error = new ParseError(
+            e.ctx.parser.getTokenStream().getText(e.ctx.start, e.offendingToken.tokenIndex),
             msg,
             offendingSymbol,
-            e,
-            e.ctx.parser.getTokenStream().getText(e.ctx.start, e.offendingToken.tokenIndex)
+            e
         )
         this.errors.push(error)
     }
@@ -138,8 +140,8 @@ class Statement {
         this.tree = ctx.toStringTree(null, ctx.parser);
         this.type = ctx.start.text;
         this.ctx = ctx;
-        self.exception = exception;
-        self.metadata = new Metadata();
+        this.exception = exception;
+        this.metadata = new Metadata();
     }
 }
 
@@ -158,7 +160,7 @@ function findSuitableError(statement, errors) {
         error_query = trim(error_query);
 
         // If a good match error_query contains statement.query
-        if (error_query.contains(statement.query)) {
+        if (error_query.includes(statement.query)) {
             statement.exception = error;
             errors.unshift(error);
         }
@@ -175,6 +177,7 @@ export function sqlparse(query, raise_exception = false) {
     parser.removeErrorListeners();
 
     const errorListener = raise_exception ? new ExceptionErrorListener() : new ExceptionCollectorListener()
+
     parser.addErrorListener(errorListener);
 
     const tree = parser.statements();
@@ -185,5 +188,7 @@ export function sqlparse(query, raise_exception = false) {
     for (const statementContext of statementsContext) {
         let stmt = new Statement(statementContext)
         findSuitableError(stmt, errorListener.errors)
+        statements.push(stmt)
     }
+    return statements
 }
