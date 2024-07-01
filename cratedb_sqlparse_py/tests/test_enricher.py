@@ -63,7 +63,7 @@ def test_with_with_parameterized_properties():
     query = "CREATE TABLE tbl (A TEXT) WITH ('key' = $1, 'key2' = '$2')"
 
     stmt = sqlparse(query)[0]
-    expected = {'key': 'val', 'key2': '2'}
+    expected = {'key': '$1', 'key2': '$2'}
 
     # Has all the keys.
     assert stmt.metadata.with_properties == expected
