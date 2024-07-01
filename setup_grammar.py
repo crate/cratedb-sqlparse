@@ -164,7 +164,7 @@ if __name__ == '__main__':
     setup_logging()
 
     input_target = sys.argv[1]
-    version = '5.6.4'
+    version = '5.7.2'
 
     if input_target.startswith("py"):
         target = Antlr4Target.python
