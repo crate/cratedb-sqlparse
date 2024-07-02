@@ -9,6 +9,12 @@ requires = [
 method = "git"
 default-tag = "0.0.0"
 
+[tool.versioningit.next-version]
+method = "smallest"
+
+[tool.versioningit.format]
+distance = "{next_version}"
+
 [project]
 name = "cratedb-sqlparse"
 description = "Parsing utilities to validate and split SQL statements for CrateDB."
