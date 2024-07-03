@@ -2,6 +2,7 @@ import typing as t
 
 from cratedb_sqlparse.generated_parser.SqlBaseParser import SqlBaseParser
 from cratedb_sqlparse.generated_parser.SqlBaseParserVisitor import SqlBaseParserVisitor
+from cratedb_sqlparse.models import Table
 
 
 class AstBuilder(SqlBaseParserVisitor):
@@ -40,8 +41,7 @@ class AstBuilder(SqlBaseParserVisitor):
         else:
             schema, name = parts
 
-        self.stmt.metadata.table_name = name
-        self.stmt.metadata.schema = schema
+        self.stmt.metadata.tables.append(Table(schema=schema, name=name))
 
     def visitGenericProperties(self, ctx: SqlBaseParser.GenericPropertiesContext):
         node_properties = ctx.genericProperty()

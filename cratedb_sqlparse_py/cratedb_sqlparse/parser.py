@@ -1,4 +1,3 @@
-import dataclasses
 import logging
 from typing import List
 
@@ -8,6 +7,7 @@ from antlr4.error.ErrorListener import ErrorListener
 from cratedb_sqlparse.AstBuilder import AstBuilder
 from cratedb_sqlparse.generated_parser.SqlBaseLexer import SqlBaseLexer
 from cratedb_sqlparse.generated_parser.SqlBaseParser import SqlBaseParser
+from cratedb_sqlparse.models import Metadata
 
 
 def BEGIN_DOLLAR_QUOTED_STRING_action(self, localctx, actionIndex):
@@ -123,19 +123,6 @@ class ExceptionCollectorListener(ErrorListener):
         )
 
         self.errors.append(error)
-
-
-@dataclasses.dataclass
-class Metadata:
-    """
-    Represents the metadata of the query, the actual interesting parts of the query such as:
-    table, schema, columns, options...
-    """
-
-    schema: str = None
-    table_name: str = None
-    parameterized_properties: dict = dataclasses.field(default_factory=dict)
-    with_properties: dict = dataclasses.field(default_factory=dict)
 
 
 class Statement:

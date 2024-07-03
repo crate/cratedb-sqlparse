@@ -118,7 +118,7 @@ from cratedb_sqlparse import sqlparse
 stmt = sqlparse("SELECT A, B FROM doc.tbl12")
 
 print(stmt.metadata)
-# Metadata(schema='doc', table_name='tbl12', parameterized_properties={}, with_properties={})
+# Metadata(tables=[Table(schema='doc', name='tbl12')], parameterized_properties={}, with_properties={})
 ```
 
 #### Query properties.
@@ -137,8 +137,22 @@ stmt = sqlparse("""
 """)[0]
 
 print(stmt.metadata)
-# Metadata(schema='doc', table_name='tbl12', parameterized_properties={}, with_properties={'allocation.max_retries': '5', 'blocks.metadata': 'false'})
+# Metadata(tables=[Table(schema='doc', name='tbl12')], with_properties={'allocation.max_retries': '5', 'blocks.metadata': 'false'})
 ```
+
+#### Table name
+```python
+print(stmt.metadata.tables)
+# [Table(schema='doc', name='tbl12')]
+
+table = stmt.metadata.tables[0]
+print(table.schema, table.name, table.fqn, sep='\n')
+# doc
+# tbl12
+# '"doc"."tbl12"'
+```
+
+
 
 #### Parameterized properties.
 
@@ -155,7 +169,7 @@ stmt = sqlparse("""
 """)[0]
 
 print(stmt.metadata)
-# Metadata(schema='doc', table_name='tbl12', parameterized_properties={'blocks.metadata': '$1'}, with_properties={'allocation.max_retries': '5', 'blocks.metadata': '$1'})
+# Metadata(tables=[Table(schema='doc', name='tbl12')], parameterized_properties={'blocks.metadata': '$1'}, with_properties={'allocation.max_retries': '5', 'blocks.metadata': '$1'})
 ```
 
 In this case, `blocks.metadata` will be in `with_properties` and `parameterized_properties` as well.
