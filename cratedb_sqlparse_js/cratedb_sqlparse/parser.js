@@ -29,6 +29,15 @@ SqlBaseLexer.prototype.END_DOLLAR_QUOTED_STRING_sempred = END_DOLLAR_QUOTED_STRI
 export class ParseError extends Error {
     name = 'ParseError'
 
+    /**
+     *
+     * @param {String} query
+     * @param {String} msg
+     * @param offending_token
+     * @param e
+     * @member {String} errorMessage
+     * @member {String} errorMessageVerbose
+     */
     constructor(query, msg, offending_token, e) {
         super(msg);
         this.query = query;
@@ -147,6 +156,11 @@ export class Statement {
     }
 }
 
+/**
+ *
+ * @param {String} string
+ * @returns {String}
+ */
 function trim(string) {
     return string.replace(/^\s+|\s+$/gm, '');
 }
@@ -163,7 +177,7 @@ function findSuitableError(statement, errors) {
         errorQuery = trim(errorQuery);
 
         // If a good match error_query contains statement.query
-        if (statement.query.includes(errorQuery)) {
+        if (errorQuery.includes(statement.query)) {
             statement.exception = error;
             errors.splice(errors.indexOf(error), 1);
         }
@@ -199,6 +213,24 @@ export function sqlparse(query, raise_exception = false) {
         findSuitableError(stmt, errorListener.errors)
         statements.push(stmt)
     }
+
+    if (errorListener.errors.length === 1) {
+        // Fixme, what if there are two unassigned errors ?
+        // can that even be possible?
+        let error = errorListener.errors[0]
+
+        for (const stmt of statements) {
+            if (stmt.exception === null && stmt.query.includes(error.query)) {
+                stmt.exception = error
+                break;
+            }
+        }
+    }
+
+    if (errorListener.errors.length > 1) {
+        console.error("Could not match errors to queries, too much ambiguity, please report it opening an issue with the query.")
+    }
+
 
     const stmtEnricher = new AstBuilder()
 
