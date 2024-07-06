@@ -1,3 +1,3 @@
 import {sqlparse} from "./parser.js";
 export {sqlparse};
-export const __cratedb_version__ = "5.6.4"
+export const __cratedb_version__ = "5.7.2"
