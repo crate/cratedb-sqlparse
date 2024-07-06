@@ -27,7 +27,8 @@ test('Several Errors should be collected and not thrown by default', () => {
     expect(stmts[2].exception).not.toBeNull();
 })
 
-test('Several Errors should be collected and not thrown by default 2', () => {
+test('Several Errors should be collected and not thrown by default 2, special case*', () => {
+    // This query is an special case, see parser
     const stmts = sqlparse(`       
         SELEC 1;
         SELECT A, B, C, D FROM tbl1;
@@ -41,12 +42,11 @@ test('Several Errors should be collected and not thrown by default 2', () => {
 })
 
 test('Several Errors should be collected and not thrown by default 3', () => {
-    const stmts = sqlparse(`
+    // language=SQL format=false
+const stmts = sqlparse(`
         SELECT 1;
-        SELECT A, B, C, D
-        FROM tbl1;
-        INSERT INTO doc.tbl
-        VALUES (1, 2, 'three', ['four']);
+        SELECT A, B, C, D FROM tbl1;
+        INSERT INTO doc.tbl VALUES (1, 2, 'three', ['four']);
     `)
 
     expect(stmts).length(3)
