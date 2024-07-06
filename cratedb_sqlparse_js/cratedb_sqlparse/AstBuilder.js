@@ -28,8 +28,8 @@ export class AstBuilder extends SqlBaseParserVisitor {
      * @param {Object} node
      * @returns {(String|null)}
      */
-    getText(node){
-        if(node){
+    getText(node) {
+        if (node) {
             return node.getText().replaceAll("'", "").replaceAll('"', "")
         }
         return null
@@ -54,7 +54,7 @@ export class AstBuilder extends SqlBaseParserVisitor {
 
         let schema = null
         let name = null;
-        if (parts.length === 1){
+        if (parts.length === 1) {
             name = parts[0]
         } else {
             schema = parts[0]
@@ -68,7 +68,7 @@ export class AstBuilder extends SqlBaseParserVisitor {
 
     /**
      *
-      * @param {SqlBaseParser.GenericPropertiesContext} ctx
+     * @param {SqlBaseParser.GenericPropertiesContext} ctx
      */
     visitGenericProperties(ctx) {
         const nodeProperties = ctx.genericProperty()

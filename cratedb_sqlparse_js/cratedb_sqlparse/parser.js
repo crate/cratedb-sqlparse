@@ -138,7 +138,8 @@ export class Statement {
      * @property {Metadata} metadata
      * @property {String} type
      * @property {String} tree
-     * @property {Object} ctx
+     * @param {Object} ctx
+     * @param {ParseError} exception
      */
     constructor(ctx, exception) {
         this.query = ctx.parser.getTokenStream().getText(
