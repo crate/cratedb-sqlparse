@@ -19,11 +19,11 @@ test("Statement's metadata has Tables", () => {
     expect(stmt.metadata.tables).not.toBeNull
     expect(stmt.metadata.tables[0].schema).toBe('a')
     expect(stmt.metadata.tables[0].name).toBe('b')
-    expect(stmt.metadata.tables[0].getFqn()).toBe('"a"."b"')
+    expect(stmt.metadata.tables[0].fqn).toBe('"a"."b"')
 
     expect(stmt.metadata.tables[1].schema).toBeNull()
     expect(stmt.metadata.tables[1].name).toBe('d')
-    expect(stmt.metadata.tables[1].getFqn()).toBe('"d"')
+    expect(stmt.metadata.tables[1].fqn).toBe('"d"')
 })
 
 test("Statement's metadata correctly gets parameterized properties", ()=>{

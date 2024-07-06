@@ -39,12 +39,13 @@ export class Table {
     constructor(name, schema) {
         this.name = name
         this.schema = schema
+        this.fqn = this._getFqn()
     }
 
     /**
      * @return {String} The full qualified name, quoted.
      */
-    getFqn() {
+    _getFqn() {
         return (this.schema ? quoted(this.schema) + "." : "") + quoted(this.name)
     }
 }
