@@ -31,12 +31,12 @@ export class ParseError extends Error {
 
     /**
      *
-     * @param {String} query
-     * @param {String} msg
-     * @param offending_token
-     * @param e
-     * @member {String} errorMessage
-     * @member {String} errorMessageVerbose
+     * @param {string} query
+     * @param {string} msg
+     * @param {object} offending_token
+     * @param {object} e
+     * @member {string} errorMessage
+     * @member {string} errorMessageVerbose
      */
     constructor(query, msg, offending_token, e) {
         super(msg);
@@ -53,14 +53,26 @@ export class ParseError extends Error {
         return `[line ${this.line}:${this.column} ${this.message}]`
     }
 
+    /**
+     *
+     * @returns {Number}
+     */
     getColumn() {
         return this.offendingToken.column
     }
 
+    /**
+     *
+     * @returns {Number}
+     */
     getLine() {
         return this.offendingToken.line
     }
 
+    /**
+     *
+     * @returns {string}
+     */
     getOriginalQueryWithErrorMarked() {
         const query = this.offendingToken.source[1].strdata
         const offendingTokenText = query.substring(this.offendingToken.start, this.offendingToken.stop + 1)
@@ -133,12 +145,12 @@ export class Statement {
 
     /**
      *
-     * @property {String} query
-     * @property {String} originalQuery
-     * @property {Metadata} metadata
-     * @property {String} type
-     * @property {String} tree
-     * @param {Object} ctx
+     * @member {Statement} query
+     * @member {string} originalQuery
+     * @member {Metadata} metadata
+     * @member {string} type - The type of query, example: 'SELECT'
+     * @member {string} tree
+     * @param {object} ctx
      * @param {ParseError} exception
      */
     constructor(ctx, exception) {
@@ -159,8 +171,8 @@ export class Statement {
 
 /**
  *
- * @param {String} string
- * @returns {String}
+ * @param {string} string
+ * @returns {string}
  */
 function trim(string) {
     return string.replace(/^\s+|\s+$/gm, '');
@@ -187,7 +199,7 @@ function findSuitableError(statement, errors) {
 
 /**
  *
- * @param {String} query
+ * @param {string} query
  * @param {Boolean} raise_exception
  * @returns {Statement[]}
  */

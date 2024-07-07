@@ -1,11 +1,12 @@
 import SqlBaseParserVisitor from "./generated_parser/SqlBaseParserVisitor.js";
+import SqlBaseParser from "./generated_parser/SqlBaseParser.js";
 import {Statement} from "./parser.js"
 import {Table} from "./models.js"
 
 
 /**
  *
- * @param {String} text
+ * @param {string} text
  * @returns {Boolean}
  */
 function isDigit(text) {
@@ -26,7 +27,7 @@ export class AstBuilder extends SqlBaseParserVisitor {
     /**
      *
      * @param {Object} node
-     * @returns {(String|null)}
+     * @returns {(string|null)}
      */
     getText(node) {
         if (node) {
