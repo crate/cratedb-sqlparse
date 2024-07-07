@@ -32,6 +32,7 @@
   ],
   "main": "./dist/sqlparse.umd.cjs",
   "module": "./dist/sqlparse.js",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "import": "./dist/sqlparse.js",
@@ -42,11 +43,14 @@
     "antlr4": "^4.13.1-patch-1"
   },
   "devDependencies": {
+    "jsdoc": "^4.0.3",
+    "terser": "^5.31.1",
     "vite": "^5.3.2",
     "vitest": "^1.6.0"
   },
   "scripts": {
     "test": "vitest run",
-    "build": "vite build"
+    "build": "vite build && tsc",
+    "docs": "jsdoc *"
   }
 }

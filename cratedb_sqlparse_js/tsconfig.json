@@ -1,0 +1,10 @@
+{
+  "include": ["cratedb_sqlparse/**/*"],
+  "compilerOptions": {
+    "allowJs": true,
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "outDir": "./dist",
+    "declarationMap": true,
+  }
+}
