@@ -47,7 +47,7 @@
     "jsdoc": "^4.0.3",
     "terser": "^5.31.2",
     "vite": "^5.3.3",
-    "vitest": "^2.0.1"
+    "vitest": "^2.0.3"
   },
   "scripts": {
     "test": "vitest run",
