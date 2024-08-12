@@ -204,9 +204,16 @@ def sqlparse(query: str, raise_exception: bool = False) -> List[Statement]:
     )
 
     statements = []
+
     for statement_context in statements_context:
         stmt = Statement(statement_context)
-        find_suitable_error(stmt, error_listener.errors)
+        if len(statements_context) == 1 and error_listener.errors:
+            # There is only one statement parsed, no need to get fancy to match.
+            stmt.exception = error_listener.errors.pop()
+
+        else:
+            find_suitable_error(stmt, error_listener.errors)
+
         statements.append(stmt)
 
     else:
@@ -229,9 +236,10 @@ def sqlparse(query: str, raise_exception: bool = False) -> List[Statement]:
                     break
 
         if len(error_listener.errors) > 1:
-            logging.error(
-                "Could not match errors to queries, too much ambiguity, open an issue with this " "error and the query."
-            )
+            # We might have too much ambiguity to match errors, but also one statement can
+            # generate several exceptions, and we only support one per statement so this could be
+            # triggered and not be an actual error.
+            pass
 
     # We extract the metadata and enrich every Statement's `metadata`.
     stmt_enricher = AstBuilder()
