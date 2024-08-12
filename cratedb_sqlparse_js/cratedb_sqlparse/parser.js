@@ -223,7 +223,14 @@ export function sqlparse(query, raise_exception = false) {
     let statements = []
     for (const statementContext of statementsContext) {
         let stmt = new Statement(statementContext)
-        findSuitableError(stmt, errorListener.errors)
+
+        if (statementsContext.length === 1 && errorListener.errors) {
+            stmt.exception = errorListener.errors.pop();
+
+        } else {
+            findSuitableError(stmt, errorListener.errors)
+        }
+
         statements.push(stmt)
     }
 
