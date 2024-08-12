@@ -1,4 +1,3 @@
-import logging
 from typing import List
 
 from antlr4 import CommonTokenStream, InputStream, RecognitionException, Token
