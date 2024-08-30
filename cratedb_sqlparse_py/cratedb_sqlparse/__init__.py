@@ -1,5 +1,5 @@
-from .parser import ParsingException, sqlparse
+from .parser import ParsingException, Statement, sqlparse
 
-__all__ = ["sqlparse", "ParsingException"]
+__all__ = ["sqlparse", "ParsingException", "Statement"]
 
 __cratedb_version__ = "5.6.4"
