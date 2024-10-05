@@ -14,8 +14,6 @@ method = "smallest"
 
 [tool.versioningit.format]
 distance = "{next_version}"
-dirty = "{next_version}"
-dirty_distance = "{next_version}"
 
 [project]
 name = "cratedb-sqlparse"
