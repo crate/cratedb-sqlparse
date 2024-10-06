@@ -71,3 +71,18 @@ test('Exception message is correct', () => {
     expect(stmts[0].exception.errorMessage).toBe(expectedMessage)
     expect(stmts[0].exception.getOriginalQueryWithErrorMarked()).toBe(expectedMessageVerbose)
 })
+
+
+test('Whitetest or special characters should not avoid exception catching', () => {
+    // https://github.com/crate/cratedb-sqlparse/issues/67
+    const stmts = [
+        `SELECT 1\n limit `,
+        `SELECT 1\r limit `,
+        `SELECT 1\t limit `,
+        `SELECT 1 limit `
+    ]
+    for (const stmt in stmts) {
+        let r = sqlparse(stmt)
+        expect(r[0].exception).toBeDefined();
+    }
+})

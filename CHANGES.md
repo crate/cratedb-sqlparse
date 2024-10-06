@@ -2,6 +2,7 @@
 
 ## Unreleased
 - Export `Statement` in both Python and Javascript target
+- Add tests for #67
 
 ## 2024/09/18 v0.0.7
 - Improve error matching on single statement
