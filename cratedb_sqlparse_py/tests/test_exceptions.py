@@ -83,3 +83,18 @@ def test_sqlparse_collects_exceptions_3():
     assert r[0].exception is None
     assert r[1].exception is None
     assert r[2].exception is None
+
+
+def test_sqlparse_catches_exception():
+    from cratedb_sqlparse import sqlparse
+
+    # Special characters shouldn't avoid exception catching.
+    # https://github.com/crate/cratedb-sqlparse/issues/67
+    stmts = """
+        SELECT 1\n limit,
+        SELECT 1\r limit,
+        SELECT 1\t limit,
+        SELECT 1 limit
+    """
+    for stmt in stmts:
+        assert sqlparse(stmt)[0].exception
