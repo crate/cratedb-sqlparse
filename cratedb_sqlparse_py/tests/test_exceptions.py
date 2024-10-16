@@ -98,3 +98,16 @@ def test_sqlparse_catches_exception():
     """
     for stmt in stmts:
         assert sqlparse(stmt)[0].exception
+
+
+def test_sqlparse_should_not_panic():
+    from cratedb_sqlparse import sqlparse
+
+    sqlparse("""
+        CREATE TABLE t01 (
+           "x" OBJECT (DYNAMIC),
+           "y" OBJECT (DYNAMIC) AS ("z" ARRAY(OBJECT (DYNAMIC))
+           );
+    """)[0]
+
+    # That's it, it shouldn't raise a runtime Exception.
