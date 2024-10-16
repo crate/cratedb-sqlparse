@@ -114,13 +114,29 @@ class ExceptionCollectorListener(ErrorListener):
         self.errors = []
 
     def syntaxError(self, recognizer, offendingSymbol, line, column, msg, e):
+        if e:
+            query = recognizer.getTokenStream().getText(e.ctx.start, offendingSymbol.tokenIndex)
+
+        else:
+            # If antlr4 doesn't give us an error object, we heuristically create a query, or a piece of it
+            # so we increase the chances of it being correctly assigned.
+            # It means that theoretically if you input two wrong queries that antlr4 manages
+            # to distinguish as two different statements (which is hard already), and both are similar
+            # the errors could be matched wrongly. Still pretty rare, and it is very hard to come up with
+            # an actual query that does it.
+
+            # The newly generated query will be either the offendingToken + one token to the left
+            # or offendingToken + two tokens to the left, if the second is possible it takes precedence.
+            min_token_to_check = max(1, offendingSymbol.tokenIndex - 2)
+            tokens = recognizer.getTokenStream().tokens[min_token_to_check : offendingSymbol.tokenIndex + 1]
+            query = "".join(token.text for token in tokens)
+
         error = ParsingException(
             msg=msg,
             offending_token=offendingSymbol,
-            e=e,
-            query=e.ctx.parser.getTokenStream().getText(e.ctx.start, e.offendingToken.tokenIndex),
+            e=e if e else type("NotViableInput", (Exception,), {})(),
+            query=query,
         )
-
         self.errors.append(error)
 
 

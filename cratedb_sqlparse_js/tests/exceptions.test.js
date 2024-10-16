@@ -15,7 +15,14 @@ test('Error should be collected and not thrown by default', () => {
     expect(() => stmts).not.toThrowError()
 })
 
-test('Several Errors should be collected and not thrown by default', () => {
+test('Single error should be collected', () => {
+    const stmt = sqlparse("SELECT A,B,C,D FROM tbl1 WHERE A ? '%A'")
+    expect(stmt[0].exception).toBeDefined()
+    expect(stmt[0].exception.msg).toBe("mismatched input '?' expecting {<EOF>, ';'}")
+    expect(stmt[0].exception.query).toBe("SELECT A,B,C,D FROM tbl1 WHERE A ?")
+})
+
+test('Several errors should be collected and not thrown by default', () => {
     const stmts = sqlparse(`
         SELECT A FROM tbl1 where;
         SELECT 1;
@@ -70,6 +77,31 @@ test('Exception message is correct', () => {
 
     expect(stmts[0].exception.errorMessage).toBe(expectedMessage)
     expect(stmts[0].exception.getOriginalQueryWithErrorMarked()).toBe(expectedMessageVerbose)
+})
+
+
+test('White or special characters should not avoid exception catching', () => {
+    // https://github.com/crate/cratedb-sqlparse/issues/67
+    const stmts = [
+        `SELECT 1\n limit `,
+        `SELECT 1\r limit `,
+        `SELECT 1\t limit `,
+        `SELECT 1 limit `
+    ]
+    for (const stmt in stmts) {
+        let r = sqlparse(stmt)
+        expect(r[0].exception).toBeDefined();
+    }
+})
+
+test('Missing token error  should not panic', ()=> {
+    // See https://github.com/crate/cratedb-sqlparse/issues/66
+    sqlparse(`
+    CREATE TABLE t01 (
+       "x" OBJECT (DYNAMIC),
+       "y" OBJECT (DYNAMIC) AS ("z" ARRAY(OBJECT (DYNAMIC))      
+       );
+`)
 })
 
 

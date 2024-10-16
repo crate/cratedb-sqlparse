@@ -124,11 +124,22 @@ class ExceptionCollectorListener extends ErrorListener {
 
     syntaxError(recognizer, offendingSymbol, line, column, msg, e) {
         super.syntaxError(recognizer, offendingSymbol, line, column, msg, e);
-        const error = new ParseError(
-            e.ctx.parser.getTokenStream().getText(new Interval(
+        let query;
+
+        if (e) {
+            query = e.ctx.parser.getTokenStream().getText(new Interval(
                 e.ctx.start,
                 e.offendingToken.tokenIndex)
-            ),
+            )
+
+        } else {
+            const min_to_check = Math.max(1, offendingSymbol.tokenIndex - 2)
+            const tokens = recognizer.getTokenStream().tokens.slice(min_to_check, offendingSymbol.tokenIndex + 1)
+            query = tokens.map((el) => el.text).join("")
+        }
+
+        const error = new ParseError(
+            query,
             msg,
             offendingSymbol,
             e
@@ -221,6 +232,7 @@ export function sqlparse(query, raise_exception = false) {
     const statementsContext = tree.children.filter((children) => children instanceof SqlBaseParser.StatementContext)
 
     let statements = []
+
     for (const statementContext of statementsContext) {
         let stmt = new Statement(statementContext)
 
