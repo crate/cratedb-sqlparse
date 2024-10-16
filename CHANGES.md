@@ -4,6 +4,7 @@
 - Export `Statement` in both Python and Javascript target
 - Fixed query parsing when expression includes special characters like `\n`, `\r`, or `\t`
 - Fixed sqlparse crash on missing error context
+- Set CrateDB version to 5.8.3
 
 ## 2024/09/18 v0.0.7
 - Improve error matching on single statement
