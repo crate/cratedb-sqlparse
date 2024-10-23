@@ -3,6 +3,7 @@ import SqlBaseParser from "./generated_parser/SqlBaseParser.js";
 import {CommonTokenStream, ErrorListener, InputStream, Interval, Token} from "antlr4";
 import {AstBuilder} from "./AstBuilder.js";
 import {Metadata} from "./models.js"
+
 function BEGIN_DOLLAR_QUOTED_STRING_action(localctx, actionIndex) {
     if (actionIndex === 0) {
         this.tags.push(this.text);
@@ -180,16 +181,6 @@ export class Statement {
     }
 }
 
-/**
- *
- * @param {string} string
- * @returns {string}
- */
-function trim(string) {
-    return string.replace(/^\s+|\s+$/gm, '');
-}
-
-
 function findSuitableError(statement, errors) {
     for (const error of errors) {
         let errorQuery = error.query;
@@ -198,7 +189,7 @@ function findSuitableError(statement, errors) {
             errorQuery = errorQuery.substring(0, errorQuery.length - 1);
         }
 
-        errorQuery = trim(errorQuery);
+        errorQuery = errorQuery.trimStart().trimEnd()
 
         // If a good match error_query contains statement.query
         if (errorQuery.includes(statement.query)) {
@@ -262,7 +253,6 @@ export function sqlparse(query, raise_exception = false) {
     if (errorListener.errors.length > 1) {
         console.error("Could not match errors to queries, too much ambiguity, please report it opening an issue with the query.")
     }
-
 
     const stmtEnricher = new AstBuilder()
 
