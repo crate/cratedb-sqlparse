@@ -58,7 +58,7 @@ def test_sqlparse_collects_exceptions():
 def test_sqlparse_collects_exceptions_2():
     from cratedb_sqlparse import sqlparse
 
-    # Different combination of the query to validate
+    # Different combination of the queries to validate
     r = sqlparse("""
          SELEC 1;
         SELECT A, B, C, D FROM tbl1;
@@ -73,7 +73,7 @@ def test_sqlparse_collects_exceptions_2():
 def test_sqlparse_collects_exceptions_3():
     from cratedb_sqlparse import sqlparse
 
-    # Different combination of the query to validate
+    # Different combination of the queries to validate
     r = sqlparse("""
         SELECT 1;
         SELECT A, B, C, D FROM tbl1;
@@ -86,10 +86,13 @@ def test_sqlparse_collects_exceptions_3():
 
 
 def test_sqlparse_catches_exception():
+    """
+    Special characters should not stop sqlparse from creating and matching the exception.
+
+    See https://github.com/crate/cratedb-sqlparse/issues/67
+    """
     from cratedb_sqlparse import sqlparse
 
-    # Special characters shouldn't avoid exception catching.
-    # https://github.com/crate/cratedb-sqlparse/issues/67
     stmts = """
         SELECT 1\n limit,
         SELECT 1\r limit,
@@ -101,6 +104,11 @@ def test_sqlparse_catches_exception():
 
 
 def test_sqlparse_should_not_panic():
+    """
+    Missing token ')' in this case, should not throw a Runtime Exception.
+
+    See https://github.com/crate/cratedb-sqlparse/issues/66
+    """
     from cratedb_sqlparse import sqlparse
 
     sqlparse("""
@@ -110,4 +118,41 @@ def test_sqlparse_should_not_panic():
            );
     """)[0]
 
-    # That's it, it shouldn't raise a runtime Exception.
+
+def test_sqlparse_match_exceptions_spaces():
+    """
+    Regardless of spaces, errors should be correctly matched to their original statement.
+
+    See https://github.com/crate/cratedb-sqlparse/issues/107
+    """
+    from cratedb_sqlparse import sqlparse
+
+    stmts = [
+        """
+        SELECT A FROM tbl1 where ;
+        SELECT 1;
+        SELECT D, A FROM tbl1 WHERE;
+        """,
+        """
+        SELECT
+          A
+        FROM
+          tbl1
+        WHERE;
+
+        SELECT
+          1;
+
+        SELECT
+          B
+        FROM
+          tbl1
+        WHERE;
+        """,
+    ]
+
+    for stmt in stmts:
+        r = sqlparse(stmt)
+        assert r[0]
+        assert r[1]
+        assert r[2]

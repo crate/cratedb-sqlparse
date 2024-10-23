@@ -94,7 +94,7 @@ test('White or special characters should not avoid exception catching', () => {
     }
 })
 
-test('Missing token error  should not panic', ()=> {
+test('Missing token error should not panic', ()=> {
     // See https://github.com/crate/cratedb-sqlparse/issues/66
     sqlparse(`
     CREATE TABLE t01 (
@@ -104,8 +104,7 @@ test('Missing token error  should not panic', ()=> {
 `)
 })
 
-
-test('Whitetest or special characters should not avoid exception catching', () => {
+test('Special characters should not avoid exception catching', () => {
     // https://github.com/crate/cratedb-sqlparse/issues/67
     const stmts = [
         `SELECT 1\n limit `,
@@ -116,5 +115,39 @@ test('Whitetest or special characters should not avoid exception catching', () =
     for (const stmt in stmts) {
         let r = sqlparse(stmt)
         expect(r[0].exception).toBeDefined();
+    }
+})
+
+test('Special query with several errors should correctly be matched regardless of spaces', () => {
+    // See https://github.com/crate/cratedb-sqlparse/issues/107
+    const stmts = [
+        `
+        SELECT A FROM tbl1 where ;
+        SELECT 1;
+        SELECT D, A FROM tbl1 WHERE;
+        `,
+
+        `
+        SELECT
+          A
+        FROM
+          tbl1
+        WHERE;
+
+        SELECT 
+          1;
+
+        SELECT
+          B
+        FROM
+          tbl1
+        WHERE;
+        `
+    ]
+    for (const stmt of stmts) {
+        const r = sqlparse(stmt)
+        expect(r[0].exception).toBeDefined()
+        expect(r[1].exception).toBeNull()
+        expect(r[2].exception).toBeDefined()
     }
 })
