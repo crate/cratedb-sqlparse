@@ -1,13 +1,19 @@
 # Changelog
 
 ## Unreleased
+- Fix error matching issue when missing EOF
+
+## 2024/10/25 v0.0.9
+- Set CrateDB version to 5.8.3
+- Fix error matching issue due to wrong error.query trimming in find_suitable_error
+
+## 2024/10/16 v0.0.8
 - Export `Statement` in both Python and Javascript target
 - Fixed query parsing when expression includes special characters like `\n`, `\r`, or `\t`
 - Fixed sqlparse crash on missing error context
-- Set CrateDB version to 5.8.3
 
 ## 2024/09/18 v0.0.7
-- Improve error matching on single statement
+- Improve error matching on single statements
 
 ## v0.0.6 skipped
 

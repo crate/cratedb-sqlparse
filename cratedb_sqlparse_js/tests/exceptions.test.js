@@ -114,7 +114,7 @@ test('Special characters should not avoid exception catching', () => {
     ]
     for (const stmt in stmts) {
         let r = sqlparse(stmt)
-        expect(r[0].exception).toBeDefined();
+        expect(r[0].exception).not.toBeNull();
     }
 })
 
@@ -146,8 +146,29 @@ test('Special query with several errors should correctly be matched regardless o
     ]
     for (const stmt of stmts) {
         const r = sqlparse(stmt)
-        expect(r[0].exception).toBeDefined()
+        expect(r[0].exception).not.toBeNull()
         expect(r[1].exception).toBeNull()
-        expect(r[2].exception).toBeDefined()
+        expect(r[2].exception).not.toBeNull()
+    }
+})
+
+test('Missing EOF should not block error catching', () => {
+    const stmts = [
+        `
+        select 1;
+        select 2
+        select 3;
+        `,
+        `
+        select 1;
+        select 1 I can put anything here
+        select 3
+        `
+    ]
+
+    for (const stmt of stmts) {
+        const r = sqlparse(stmt)
+        expect(r[0].exception).toBeNull()
+        expect(r[1].exception).not.toBeNull()
     }
 })

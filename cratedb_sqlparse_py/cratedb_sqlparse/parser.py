@@ -128,7 +128,9 @@ class ExceptionCollectorListener(ErrorListener):
             # The newly generated query will be either the offendingToken + one token to the left
             # or offendingToken + two tokens to the left, if the second is possible it takes precedence.
             min_token_to_check = max(1, offendingSymbol.tokenIndex - 2)
-            tokens = recognizer.getTokenStream().tokens[min_token_to_check : offendingSymbol.tokenIndex + 1]
+            tokens = recognizer.getTokenStream().tokens
+
+            tokens = tokens[min_token_to_check : offendingSymbol.tokenIndex]
             query = "".join(token.text for token in tokens)
 
         error = ParsingException(
@@ -184,16 +186,14 @@ class Statement:
 
 def find_suitable_error(statement, errors):
     for error in errors[:]:
-        # We clean the error_query of ';' and spaces because ironically,
-        # we can get the full query in the error but not in the parsed statement.
         error_query = error.query
         if error_query.endswith(";"):
             error_query = error_query[: len(error_query) - 1]
 
         error_query = error_query.lstrip().rstrip()
 
-        # If a good match error_query contains statement.query
-        if statement.query in error_query:
+        # If a good match, error_query contains statement.query
+        if error_query in statement.query:
             statement.exception = error
             errors.pop(errors.index(error))
 
