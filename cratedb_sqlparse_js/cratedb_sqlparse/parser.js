@@ -135,7 +135,7 @@ class ExceptionCollectorListener extends ErrorListener {
 
         } else {
             const min_to_check = Math.max(1, offendingSymbol.tokenIndex - 2)
-            const tokens = recognizer.getTokenStream().tokens.slice(min_to_check, offendingSymbol.tokenIndex + 1)
+            const tokens = recognizer.getTokenStream().tokens.slice(min_to_check, offendingSymbol.tokenIndex)
             query = tokens.map((el) => el.text).join("")
         }
 
@@ -192,7 +192,7 @@ function findSuitableError(statement, errors) {
         errorQuery = errorQuery.trimStart().trimEnd()
 
         // If a good match error_query contains statement.query
-        if (errorQuery.includes(statement.query)) {
+        if (statement.query.includes(errorQuery)) {
             statement.exception = error;
             errors.splice(errors.indexOf(error), 1);
         }

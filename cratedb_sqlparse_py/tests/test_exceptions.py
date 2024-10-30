@@ -156,3 +156,30 @@ def test_sqlparse_match_exceptions_spaces():
         assert r[0]
         assert r[1]
         assert r[2]
+
+
+def test_sqlparse_match_exception_missing_eof():
+    """
+    Statements that miss an eof should be detected as one, and catch the appropriate exception
+
+    See https://github.com/crate/cratedb-sqlparse/issues/113
+    """
+    from cratedb_sqlparse import sqlparse
+
+    stmts = [
+        """
+        select 1;
+        select 2
+        select 3;
+        """,
+        """
+        select 1;
+        select 1 I can put anything here
+        select 3
+        """,
+    ]
+    for stmt in stmts:
+        r = sqlparse(stmt)
+        assert len(r) == 2
+        assert not r[0].exception
+        assert r[1].exception
