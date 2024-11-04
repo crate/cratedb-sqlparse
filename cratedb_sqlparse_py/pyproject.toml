@@ -94,7 +94,7 @@ release = [
 ]
 test = [
   "pytest<9",
-  "pytest-cov<6",
+  "pytest-cov<7",
 ]
 [project.urls]
 changelog = "https://github.com/crate/cratedb-sqlparse/blob/main/CHANGES.md"
