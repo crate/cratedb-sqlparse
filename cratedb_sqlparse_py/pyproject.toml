@@ -90,7 +90,7 @@ generate = [
 ]
 release = [
   "build<2",
-  "twine<6",
+  "twine<7",
 ]
 test = [
   "pytest<9",
