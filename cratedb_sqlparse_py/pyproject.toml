@@ -5,16 +5,6 @@ requires = [
   "versioningit",
 ]
 
-[tool.versioningit.vcs]
-method = "git"
-default-tag = "0.0.0"
-
-[tool.versioningit.next-version]
-method = "smallest"
-
-[tool.versioningit.format]
-distance = "{next_version}"
-
 [project]
 name = "cratedb-sqlparse"
 description = "Parsing utilities to validate and split SQL statements for CrateDB."
@@ -76,58 +66,75 @@ dynamic = [
 dependencies = [
   "antlr4-python3-runtime<4.14",
 ]
-[project.optional-dependencies]
-develop = [
+optional-dependencies.develop = [
   "mypy<1.15",
+  "packaging",
   "poethepoet<0.33",
   "pyproject-fmt<2.6",
   "ruff<0.10",
   "validate-pyproject<0.24",
 ]
-generate = [
+optional-dependencies.generate = [
   "antlr4-tools<0.3",
   "requests<3",
 ]
-release = [
+optional-dependencies.release = [
   "build<2",
   "twine<7",
 ]
-test = [
+optional-dependencies.test = [
   "pytest<9",
   "pytest-cov<7",
 ]
-[project.urls]
-changelog = "https://github.com/crate/cratedb-sqlparse/blob/main/CHANGES.md"
-documentation = "https://github.com/crate/cratedb-sqlparse"
-homepage = "https://github.com/crate/cratedb-sqlparse"
-repository = "https://github.com/crate/cratedb-sqlparse"
+urls.changelog = "https://github.com/crate/cratedb-sqlparse/blob/main/CHANGES.md"
+urls.documentation = "https://github.com/crate/cratedb-sqlparse"
+urls.homepage = "https://github.com/crate/cratedb-sqlparse"
+urls.repository = "https://github.com/crate/cratedb-sqlparse"
+
+[tool.setuptools.packages.find]
+namespaces = false
 
 [tool.black]
 line-length = 120
 
-[tool.coverage.run]
-branch = false
-omit = [
-  "tests/*",
-  "cratedb_sqlparse/generated_parser/*"
+[tool.ruff]
+line-length = 120
+
+lint.select = [
+  # Builtins
+  "A",
+  # Bugbear
+  "B",
+  # comprehensions
+  "C4",
+  # Pycodestyle
+  "E",
+  # eradicate
+  "ERA",
+  # Pyflakes
+  "F",
+  # isort
+  "I",
+  # pandas-vet
+  "PD",
+  # return
+  "RET",
+  # Bandit
+  "S",
+  # print
+  "T20",
+  "W",
+  # flake8-2020
+  "YTT",
 ]
-source = ["cratedb_sqlparse"]
 
-[tool.coverage.report]
-fail_under = 0
-show_missing = true
+lint.extend-ignore = [
+  "RET504", # Unnecessary variable assignment before `return` statement
+  "RET505", # Unnecessary `elif` after `return` statement
+]
 
-[tool.mypy]
-packages = ["cratedb_sqlparse"]
-install_types = true
-ignore_missing_imports = true
-implicit_optional = true
-non_interactive = true
-# FIXME: Does not work?
-exclude = [
-  "^SqlBaseLexer\\.py$",
-  "cratedb_sqlparse/generated_parser/",
-  "cratedb_sqlparse/generated_parser/SqlBaseParser.py",
+lint.per-file-ignores."tests/*" = [
+  "S101", # Use of `assert` detected.
 ]
 
 [tool.pytest.ini_options]
@@ -147,56 +154,40 @@ xfail_strict = true
 markers = [
 ]
 
-[tool.ruff]
-line-length = 120
+[tool.coverage.run]
+branch = false
+omit = [
+  "tests/*",
+  "cratedb_sqlparse/generated_parser/*",
+]
+source = [ "cratedb_sqlparse" ]
 
-lint.select = [
-  # Bandit
-  "S",
-  # Bugbear
-  "B",
-  # Builtins
-  "A",
-  # comprehensions
-  "C4",
-  # eradicate
-  "ERA",
-  # flake8-2020
-  "YTT",
-  # isort
-  "I",
-  # pandas-vet
-  "PD",
-  # print
-  "T20",
-  # Pycodestyle
-  "E",
-  "W",
-  # Pyflakes
-  "F",
-  # return
-  "RET",
+[tool.coverage.report]
+fail_under = 0
+show_missing = true
+
+[tool.mypy]
+packages = [ "cratedb_sqlparse" ]
+install_types = true
+ignore_missing_imports = true
+implicit_optional = true
+non_interactive = true
+# FIXME: Does not work?
+exclude = [
+  "^SqlBaseLexer\\.py$",
+  "cratedb_sqlparse/generated_parser/",
+  "cratedb_sqlparse/generated_parser/SqlBaseParser.py",
 ]
 
-lint.extend-ignore = [
-  # Unnecessary variable assignment before `return` statement
-  "RET504",
-  # Unnecessary `elif` after `return` statement
-  "RET505",
-]
+[tool.versioningit.vcs]
+method = "git"
+default-tag = "0.0.0"
 
-[tool.ruff.lint.per-file-ignores]
-"tests/*" = [
-  # Use of `assert` detected.
-  "S101",
-]
-"influxio/util/report.py" = [
-  "T201",
-]
+[tool.versioningit.next-version]
+method = "smallest"
 
-[tool.setuptools.packages.find]
-namespaces = false
-
+[tool.versioningit.format]
+distance = "{next_version}"
 
 # ===================
 # Tasks configuration
