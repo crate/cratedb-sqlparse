@@ -1,3 +1,4 @@
+# ruff: noqa: A005  # Module `parser` shadows a Python standard-library module
 from typing import List
 
 from antlr4 import CommonTokenStream, InputStream, RecognitionException, Token
@@ -181,7 +182,7 @@ class Statement:
         return self.ctx.start.text
 
     def __repr__(self):
-        return f'{self.__class__.__qualname__}<{self.query if len(self.query) < 15 else self.query[:15] + "..."}>'
+        return f"{self.__class__.__qualname__}<{self.query if len(self.query) < 15 else self.query[:15] + '...'}>"
 
 
 def find_suitable_error(statement, errors):
