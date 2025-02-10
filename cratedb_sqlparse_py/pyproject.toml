@@ -68,7 +68,7 @@ dependencies = [
   "antlr4-python3-runtime<4.14",
 ]
 optional-dependencies.develop = [
-  "mypy<1.15",
+  "mypy<1.16",
   "packaging",
   "poethepoet<0.33",
   "pyproject-fmt<2.6",
