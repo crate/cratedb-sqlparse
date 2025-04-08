@@ -164,3 +164,11 @@ cython_debug/
 *.tokens
 *.interp
 *.g4
+
+node_modules
+**/cratedb_sqlparse/**/SqlBaseParserVisitor.*
+**/cratedb_sqlparse/**/SqlBaseParserListener.*
+
+node_modules
+**/cratedb_sqlparse/**/SqlBaseParserVisitor.*
+**/cratedb_sqlparse/**/SqlBaseParserListener.*
