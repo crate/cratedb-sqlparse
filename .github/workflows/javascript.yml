@@ -38,16 +38,6 @@ jobs:
       OS: ${{ matrix.os }}
       NODEJS: ${{ matrix.node-version }}
 
-    # https://docs.github.com/en/actions/using-containerized-services/about-service-containers
-    services:
-      cratedb:
-        image: crate/crate:nightly
-        ports:
-          - 4200:4200
-          - 5432:5432
-        env:
-          CRATE_HEAP_SIZE: 4g
-
     name: Node.js ${{ matrix.node-version }} on OS ${{ matrix.os }}
     steps:
 
