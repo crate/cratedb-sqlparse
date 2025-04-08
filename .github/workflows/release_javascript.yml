@@ -27,7 +27,12 @@ jobs:
           python -m pip install -r requirements.txt
           python setup_grammar.py javascript
 
+      - name: Set VERSION from tag
+        run: |
+          npm version ${GITHUB_REF#refs/*/v}
+
       - run: npm build
+
       - run: npm publish --provenance --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
