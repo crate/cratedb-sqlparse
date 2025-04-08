@@ -1,13 +1,13 @@
 # Developer Guide for cratedb-sqlparse
 
-About building locally, or using a different CrateDB version.
+Libraries in this repository are not usable without building the necessary files with `setup_grammar.py`,
+this is because the generated parser is not uploaded to the repository. Every target language, e.g:
+Python or JavaScript, needs to be built independently.
 
-> The generated parser is not uploaded to the repository because it is huge.
-> To use the package locally or to build a different version use the build script.
+The build script should not have any side effect, meaning you should be able to re-build with
+a different CrateDB version without any extra work.
 
-## Setup
-
-To start things off, bootstrap the sandbox environment.
+## Running the build script.
 
 ### Acquire sources
 ```shell
@@ -15,111 +15,116 @@ git clone git@github.com:crate/cratedb-sqlparse.git
 cd cratedb-sqlparse
 ```
 
-### Install dependencies
+### Setup uv
+[uv](https://docs.astral.sh/uv/) is used across the project and is the recommended dependency tool, both for building the
+project's grammar and the development of the Python target.
+
+macOS and Linux:
+```shell
+curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
+
+Windows:
+```shell
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+```
+
+If those options don't work, see https://docs.astral.sh/uv/getting-started/installation/
+
+### Install dependencies
+```shell
 pip install -r requirements.txt
 ```
 
-### Generate grammar files
+or uv
+
 ```shell
-poe generate
+uv pip install -r requirements.txt
 ```
 
+### Generate grammar files
 
-## Running Tests for Python
+Python:
+```shell
+uv run python setup_grammar.py python
+```
 
-First, navigate to the corresponding subdirectory:
+Javascript:
+```shell
+uv run python setup_grammar.py javascript
+```
 
-    cd cratedb_sqlparse_py
+Now libraries that were built are ready to use, every library e.g. `cratedb_sqlparse_js` 
+are on themselves different projects, with their own dependencies and
+dependency management systems.
 
-Verify code by running all linters and software tests:
+## Setting up cratedb_sqlparse_py
 
-    poe check
-
-Run specific tests:
-
-    pytest -k enricher
-    pytest -k lexer
-
-Format code:
-
-    poe format
+In `./cratedb_sqlparse_py` run
 
 
+### Set up dependencies
+
+```shell
+uv sync --all-groups
+```
+
+### Run tests
+
+```shell
+uv run pytest
+```
+
+### Format code:
+```shell
+uv run poe format
+```
+ 
 ## Running Tests for JavaScript
+In `./cratedb_sqlparse_js` run:
 
-First, navigate to the corresponding subdirectory:
+## Setup dependencies
+```shell
+npm install
+```
 
-    cd cratedb_sqlparse_js
+## Run tests
+```shell
+npm test
+```
 
-Set up project:
+## Releasing libraries.
+Releases are done on GitHub, by creating a [new release](https://github.com/crate/cratedb-sqlparse/releases)
+every library will be built and published.
 
-    npm install
-
-Verify code by running all linters and software tests:
-
-    npm test
-
-Run specific tests:
-
-    ???
-
-Format code:
-
-    ???
-
-
-
-## Running a Release
+1. Make sure that in `setup_grammar.py` the CrateDB version matches the one you want.
+2. On GitHub create a new release, creating the appropriate tag and adapting the changelog.
 
 ### Python
+Releases to https://pypi.org/project/cratedb-sqlparse/
 
 Overview:
 - Versioning happens automatically based on the `versioningit` package.
-  You just need to tag the repository.
-- Package building and publishing happens automatically, being staged
-  through GHA to PyPI.
 
-On branch `main`:
-- Add a section for the new version in the `CHANGES.md` file.
-- Commit your changes with a message like `Release vx.y.z`.
-- Create a tag, and push to remote.
-  This will trigger a GitHub action which releases the new version to PyPI.
-  ```shell
-  git tag v0.0.3
-  git push --tags
-  ```
-- On GitHub, designate a new release, copying in the relevant section
-  from the CHANGELOG.
-  https://github.com/crate/cratedb-sqlparse/releases
-
+#### Manual release.
 Optionally, build the package and upload to PyPI manually.
 ```shell
-poe release
+uv run poe release
 ```
 
-
 ### JavaScript
+Releases to https://www.npmjs.com/package/@cratedb/cratedb-sqlparse
 
 Overview:
-- Versioning happens manually on behalf of the `package.json` file.
-- Package building and publishing to npmjs.com happens manually, using
-  the `npm` program.
+- Versioning is manual.
 
-On branch `main`:
-- Make sure to run `poe generate` on the root folder first.
-- Adjust version number in `package.json`.
-- Generate `package-lock.json`.
+#### Manual release
+Make sure to run `poe generate` on the root folder first and adjust version number in `package.json`.
 
-      npm install --package-lock-only
-
-- Commit your changes with a message like `Release vx.y.z`.
-- Create a tag, and push to remote.
-- Build package.
-
-      npm run build
-
-- Publish package.
-
-      npm login
-      npm publish
+Then run:
+```shell
+npm install --package-lock-only && 
+npm run build &&
+npm login &&
+npm publish
+```
