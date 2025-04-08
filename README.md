@@ -49,11 +49,13 @@ print(select_query.query)
 ```
 
 ## Limitations
+All the implemented libraries can validate SQL, split queries and parse using antrl4's listeners.
 
-Listeners are not implemented, which means that you can only: Validate SQL syntax,
-split queries and get some Tokens metadata from
-the query, if you need some more information like what https://github.com/macbre/sql-metadata does (
-e.g. get the columns of this query) open a new issue.
+Listeners are partially implemented, which means that we can only parse:
+
+* Create table statements: table name, schema, and 'with' options
+
+If more metadata is needed, it can be requested in a new issue.
 
 New features should preferably be implemented in all available targets.
 
