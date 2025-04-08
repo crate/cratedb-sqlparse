@@ -2,9 +2,14 @@
 name: JavaScript Tests
 
 on:
-  pull_request: ~
+  pull_request:
+    branches: [ main ]
+    paths:
+      - cratedb_sqlparse_js
   push:
     branches: [ main ]
+    paths:
+      - cratedb_sqlparse_js
 
   # Allow job to be triggered manually.
   workflow_dispatch:
@@ -24,15 +29,13 @@ defaults:
     working-directory: cratedb_sqlparse_js
 
 jobs:
-
   tests:
-
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
         os: ["ubuntu-latest"]
-        node-version: ["18", "20", "22"]
+        node-version: ["20", "22", "23"]
 
     env:
       OS: ${{ matrix.os }}

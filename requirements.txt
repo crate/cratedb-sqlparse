@@ -1,3 +1,2 @@
 antlr4-tools<0.3
-poethepoet<1
 requests<3
