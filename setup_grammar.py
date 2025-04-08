@@ -157,18 +157,15 @@ def set_version(target: Antlr4Target, version: str):
 if __name__ == '__main__':
     """
     Invoke the grammar compiler / generator.
-
-    TODO: Converge `version` into command-line argument?
-    TODO: Improve efficiency by generating runtime parser for all implemented languages at once.
     """
     setup_logging()
 
     input_target = sys.argv[1]
-    version = '5.8.3'
+    version = '5.10.4'
 
     if input_target.startswith("py"):
         target = Antlr4Target.python
-    elif input_target.startswith("js") or input_target.startswith("java"):
+    elif input_target.startswith("js") or input_target.startswith("javascript"):
         target = Antlr4Target.js
     else:
         raise NotImplementedError(f"Parser generator for target {input_target} not implemented")
