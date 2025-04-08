@@ -1,6 +1,11 @@
-[tool.poe.tasks]
-
-generate = [
-  { cmd = "python setup_grammar.py python" },
-  { cmd = "python setup_grammar.py javascript" },
+[project]
+name = "cratedb-sqlparse-generator"
+version = "0.0.1"
+description = "Dependencies to build and generate cratedb-sqlparse parsers; same for all target languages"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "antlr4-tools>=0.2.1",
+    "requests>=2.32.3",
 ]
+tool.uv.package = false
