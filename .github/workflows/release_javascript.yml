@@ -34,7 +34,7 @@ jobs:
 
       - name: Build package
         working-directory: 'cratedb_sqlparse_js'
-        run: npm build
+        run: npm run build
 
       - run: npm publish --provenance --access public
         working-directory: 'cratedb_sqlparse_js'
