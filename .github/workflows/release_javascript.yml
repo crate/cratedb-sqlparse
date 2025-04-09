@@ -28,11 +28,15 @@ jobs:
           python setup_grammar.py javascript
 
       - name: Set VERSION from tag
+        working-directory: 'cratedb_sqlparse_js'
         run: |
           npm version ${GITHUB_REF#refs/*/v}
 
-      - run: npm build
+      - name: Build package
+        working-directory: 'cratedb_sqlparse_js'
+        run: npm build
 
       - run: npm publish --provenance --access public
+        working-directory: 'cratedb_sqlparse_js'
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
