@@ -35,7 +35,6 @@ classifiers = [
   "Operating System :: Unix",
   "Programming Language :: Python",
   "Programming Language :: Python :: 3 :: Only",
-  "Programming Language :: Python :: 3.8",
   "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
@@ -60,28 +59,26 @@ dependencies = [
   "antlr4-python3-runtime<4.14",
 ]
 
+urls.Changelog = "https://github.com/crate/cratedb-sqlparse/releases"
+urls.Documentation = "https://github.com/crate/cratedb-sqlparse"
+urls.Homepage = "https://github.com/crate/cratedb-sqlparse"
+urls.Repository = "https://github.com/crate/cratedb-sqlparse"
+
 [dependency-groups]
 dev = [
   "mypy<1.16",
   "packaging",
   "poethepoet<1",
   "pyproject-fmt<2.6",
-  "ruff<0.12",
-  "validate-pyproject<0.25",
   "pytest<9",
   "pytest-cov<7",
+  "ruff<0.12",
+  "validate-pyproject<0.25",
 ]
 generate = [
   "antlr4-tools<0.3",
   "requests<3",
 ]
-
-[project.urls]
-Homepage = "https://github.com/crate/cratedb-sqlparse"
-Documentation = "https://github.com/crate/cratedb-sqlparse"
-Repository = "https://github.com/crate/cratedb-sqlparse"
-Changelog = "https://github.com/crate/cratedb-sqlparse/releases"
-
 
 [tool.setuptools.packages.find]
 namespaces = false
@@ -143,7 +140,7 @@ testpaths = [
   "tests",
 ]
 xfail_strict = true
-markers = []
+markers = [  ]
 
 [tool.coverage.run]
 branch = false
@@ -169,7 +166,6 @@ exclude = [
   "cratedb_sqlparse/generated_parser/",
   "cratedb_sqlparse/generated_parser/SqlBaseParser.py",
 ]
-
 
 # ===================
 # Tasks configuration
