@@ -19,7 +19,7 @@ jobs:
 
       - name: fix .npmrc location
         run: |
-          cp .npmrc cratedb_sqlparse_js
+          cp $NPM_CONFIG_USERCONFIG ./cratedb_sqlparse_js/.npmrc
 
       - name: Set up Python
         uses: actions/setup-python@v5
