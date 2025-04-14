@@ -1,12 +1,6 @@
-[build-system]
-build-backend = "setuptools.build_meta"
-requires = [
-  "setuptools>=42", # At least v42 of setuptools required.
-  "versioningit",
-]
-
 [project]
 name = "cratedb-sqlparse"
+version = "0.0.0"
 description = "Parsing utilities to validate and split SQL statements for CrateDB."
 readme = "README.md"
 keywords = [
@@ -61,9 +55,7 @@ classifiers = [
   "Topic :: Text Processing",
   "Topic :: Utilities",
 ]
-dynamic = [
-  "version",
-]
+
 dependencies = [
   "antlr4-python3-runtime<4.14",
 ]
@@ -82,11 +74,6 @@ dev = [
 generate = [
   "antlr4-tools<0.3",
   "requests<3",
-]
-
-release = [
-  "build<2",
-  "twine<7",
 ]
 
 [project.urls]
@@ -183,15 +170,6 @@ exclude = [
   "cratedb_sqlparse/generated_parser/SqlBaseParser.py",
 ]
 
-[tool.versioningit.vcs]
-method = "git"
-default-tag = "0.0.0"
-
-[tool.versioningit.next-version]
-method = "smallest"
-
-[tool.versioningit.format]
-distance = "{next_version}"
 
 # ===================
 # Tasks configuration
