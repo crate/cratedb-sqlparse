@@ -17,6 +17,10 @@ jobs:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
 
+      - name: fix .npmrc location
+        run: |
+          - cp .npmrc cratedb_sqlparse_js
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
