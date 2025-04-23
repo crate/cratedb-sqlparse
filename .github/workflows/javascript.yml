@@ -2,15 +2,14 @@ name: JavaScript Tests
 
 on:
   pull_request:
-    branches: [ main ]
     paths:
-      - .github/workflows/javascript.yml
-      - cratedb_sqlparse_js/**
+    - '.github/workflows/javascript.yml'
+    - 'cratedb_sqlparse_js/**'
   push:
     branches: [ main ]
     paths:
-      - .github/workflows/javascript.yml
-      - cratedb_sqlparse_js/**
+    - '.github/workflows/javascript.yml'
+    - 'cratedb_sqlparse_js/**'
 
   # Allow job to be triggered manually.
   workflow_dispatch:

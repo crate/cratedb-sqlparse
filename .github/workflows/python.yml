@@ -2,15 +2,14 @@ name: Python Tests
 
 on:
   pull_request:
-    branches: [ main ]
     paths:
-      - .github/workflows/python.yml
-      - cratedb_sqlparse_py/**
+    - '.github/workflows/python.yml'
+    - 'cratedb_sqlparse_py/**'
   push:
     branches: [ main ]
     paths:
-      - .github/workflows/python.yml
-      - cratedb_sqlparse_py/**
+    - '.github/workflows/python.yml'
+    - 'cratedb_sqlparse_py/**'
 
   # Allow job to be triggered manually.
   workflow_dispatch:
