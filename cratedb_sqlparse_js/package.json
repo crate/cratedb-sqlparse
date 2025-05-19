@@ -45,7 +45,7 @@
   },
   "devDependencies": {
     "jsdoc": "^4.0.4",
-    "terser": "^5.39.0",
+    "terser": "^5.39.2",
     "vite": "^6.3.5",
     "vitest": "^3.1.3"
   },
