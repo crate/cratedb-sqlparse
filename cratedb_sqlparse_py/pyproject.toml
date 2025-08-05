@@ -69,7 +69,7 @@ dev = [
   "mypy<1.18",
   "packaging",
   "poethepoet<1",
-  "pyproject-fmt<2.6",
+  "pyproject-fmt<2.7",
   "pytest<9",
   "pytest-cov<7",
   "ruff<0.13",
