@@ -66,7 +66,7 @@ urls.Repository = "https://github.com/crate/cratedb-sqlparse"
 
 [dependency-groups]
 dev = [
-  "mypy<1.18",
+  "mypy<1.19",
   "packaging",
   "poethepoet<1",
   "pyproject-fmt<2.7",
