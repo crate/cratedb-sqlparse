@@ -71,7 +71,7 @@ dev = [
   "poethepoet<1",
   "pyproject-fmt<2.7",
   "pytest<9",
-  "pytest-cov<7",
+  "pytest-cov<8",
   "ruff<0.14",
   "validate-pyproject<0.25",
 ]
