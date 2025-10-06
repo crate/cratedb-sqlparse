@@ -18,8 +18,12 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
 
       - name: Manually set .npmrc
-        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ./cratedb_sqlparse_js/.npmrc
-
+        run: |
+          # The token works fine in my own .npmjs, but for some reason the .npmrc that is being set up
+          # is not being picked up, manually setting the first line didnt work, maybe its the second?
+          # we might need 
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ./cratedb_sqlparse_js/.npmrc
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
@@ -39,7 +43,7 @@ jobs:
         working-directory: 'cratedb_sqlparse_js'
         run: npm install && npm run build
 
-      - run: npm publish --provenance --access public
+      - run: npm publish --provenance --access public --registry=https://registry.npmjs.org/:authToken=${{ secrets.NPM_TOKEN }}
         working-directory: 'cratedb_sqlparse_js'
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
