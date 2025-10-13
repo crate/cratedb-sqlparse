@@ -72,7 +72,7 @@ dev = [
   "pyproject-fmt<2.7",
   "pytest<9",
   "pytest-cov<8",
-  "ruff<0.14",
+  "ruff<0.15",
   "validate-pyproject<0.25",
 ]
 generate = [
