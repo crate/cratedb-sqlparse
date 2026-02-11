@@ -73,7 +73,7 @@ dev = [
   "pytest<9",
   "pytest-cov<8",
   "ruff<0.16",
-  "validate-pyproject<0.25",
+  "validate-pyproject<0.26",
 ]
 generate = [
   "antlr4-tools<0.3",
