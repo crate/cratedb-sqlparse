@@ -54,7 +54,7 @@ Javascript:
 uv run python setup_grammar.py javascript
 ```
 
-Now libraries that were built are ready to use, every library e.g. `cratedb_sqlparse_js` 
+Now libraries that were built are ready to use, every library e.g. `cratedb_sqlparse_js`
 are on themselves different projects, with their own dependencies and
 dependency management systems.
 
@@ -79,7 +79,7 @@ uv run pytest
 ```shell
 uv run poe format
 ```
- 
+
 ## Running Tests for JavaScript
 In `./cratedb_sqlparse_js` run:
 
@@ -123,7 +123,7 @@ Make sure to run `poe generate` on the root folder first and adjust version numb
 
 Then run:
 ```shell
-npm install --package-lock-only && 
+npm install &&
 npm run build &&
 npm login &&
 npm publish
