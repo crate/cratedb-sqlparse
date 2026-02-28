@@ -61,6 +61,8 @@ jobs:
         uv sync --all-groups
 
     - name: Run linter and software tests
+      env:
+        ANTLR4_TOOLS_ANTLR_VERSION: 4.13.2
       run: |
         uv run poe check
 
