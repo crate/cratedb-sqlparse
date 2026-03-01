@@ -59,6 +59,7 @@ jobs:
     - name: Set up project
       run: |
         uv sync --all-groups
+        uv pip install --upgrade 'antlr4-tools @ git+https://github.com/crate-workbench/antlr4-tools@search.maven.org'
 
     - name: Run linter and software tests
       run: |
