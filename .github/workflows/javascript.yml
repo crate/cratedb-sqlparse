@@ -62,10 +62,20 @@ jobs:
         cache: 'npm'
         cache-dependency-path: '**/package-lock.json'
 
-    - name: Generate runtime grammar
+    - name: Set up project
       run: |
         cd ..
         pip install --requirement requirements.txt
+        # TODO: Remove again after upstream patch was merged and released.
+        # https://github.com/crate/cratedb-sqlparse/issues/170
+        # https://github.com/antlr/antlr4-tools/issues/22
+        # https://github.com/antlr/antlr4-tools/pull/23
+        pip uninstall --yes antlr4-tools
+        pip install --upgrade 'antlr4-tools @ git+https://github.com/crate-workbench/antlr4-tools@search.maven.org'
+
+    - name: Generate runtime grammar
+      run: |
+        cd ..
         python setup_grammar.py javascript
 
     - name: Set up project
