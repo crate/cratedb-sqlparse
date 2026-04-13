@@ -5,7 +5,7 @@ description = "Dependencies to build and generate cratedb-sqlparse parsers; same
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "antlr4-tools>=0.2.1",
+    "antlr4-tools>=0.2.2",
     "requests>=2.32.3",
 ]
 tool.uv.package = false
