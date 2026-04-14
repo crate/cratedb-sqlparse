@@ -2,6 +2,7 @@
 
 ## Unreleased
 - Fix error matching issue when missing EOF
+- Set CrateDB version to 6.2.4
 
 ## 2024/10/25 v0.0.9
 - Set CrateDB version to 5.8.3
