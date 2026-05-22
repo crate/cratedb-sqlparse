@@ -1,6 +1,6 @@
 # Changelog
 
-## 2026/05/22 v0,0.18
+## 2026/05/22 v0.0.18
 - Fix error matching issue when missing EOF
 - Set CrateDB version to 6.3.2
 
