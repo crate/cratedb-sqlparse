@@ -9,7 +9,7 @@ def test_exception_message():
         SELECT A, B, C, D FROM tbl1;
         SELECT D, A FROM tbl1 WHERE;
     """)
-    expected_message = "InputMismatchException[line 2:9 mismatched input 'SELEC' expecting {'SELECT', 'DEALLOCATE', 'FETCH', 'END', 'WITH', 'CREATE', 'ALTER', 'KILL', 'CLOSE', 'BEGIN', 'START', 'COMMIT', 'ANALYZE', 'DISCARD', 'EXPLAIN', 'SHOW', 'OPTIMIZE', 'REFRESH', 'RESTORE', 'DROP', 'INSERT', 'VALUES', 'DELETE', 'UPDATE', 'SET', 'RESET', 'COPY', 'GRANT', 'DENY', 'REVOKE', 'DECLARE'}]"  # noqa
+    expected_message = "InputMismatchException[line 2:9 mismatched input 'SELEC' expecting {<EOF>, 'SELECT', 'DEALLOCATE', 'FETCH', 'END', 'WITH', 'CREATE', 'ALTER', 'KILL', 'CLOSE', 'BEGIN', 'START', 'COMMIT', 'ANALYZE', 'DISCARD', 'EXPLAIN', 'SHOW', 'OPTIMIZE', 'REFRESH', 'RESTORE', 'DROP', 'INSERT', 'VALUES', 'DELETE', 'UPDATE', 'SET', 'RESET', 'COPY', 'GRANT', 'DENY', 'REVOKE', 'DECLARE', ';'}]"  # noqa
     expected_message_2 = "\n         SELEC 1;\n         ^^^^^\n        SELECT A, B, C, D FROM tbl1;\n        SELECT D, A FROM tbl1 WHERE;\n    "  # noqa
     assert r[0].exception.error_message == expected_message
     assert r[0].exception.original_query_with_error_marked == expected_message_2
@@ -93,12 +93,12 @@ def test_sqlparse_catches_exception():
     """
     from cratedb_sqlparse import sqlparse
 
-    stmts = """
-        SELECT 1\n limit,
-        SELECT 1\r limit,
-        SELECT 1\t limit,
-        SELECT 1 limit
-    """
+    stmts = [
+        "SELECT 1\n limit",
+        "SELECT 1\r limit",
+        "SELECT 1\t limit",
+        "SELECT 1 limit",
+    ]
     for stmt in stmts:
         assert sqlparse(stmt)[0].exception
 
@@ -183,3 +183,33 @@ def test_sqlparse_match_exception_missing_eof():
         assert len(r) == 2
         assert not r[0].exception
         assert r[1].exception
+
+
+def test_sqlparse_recovers_invalid_leading_token():
+    """An invalid leading token must still yield a Statement carrying the exception (GH-284)."""
+    from cratedb_sqlparse import sqlparse
+
+    r = sqlparse("SELCT 2")
+    assert len(r) == 1
+    assert r[0].exception is not None
+    assert isinstance(r[0].query, str)  # synthesized statement: attribute access must not raise
+    assert r[0].type is None
+
+    # A bad leading statement must not swallow the valid ones after it.
+    r = sqlparse("SELCT 1; SELECT 2; SELECT 3 FROM tbl WHERE;")
+    assert len(r) == 3
+    assert r[0].exception is not None
+    assert r[1].exception is None
+    assert r[2].exception is not None
+
+
+@pytest.mark.xfail(reason="GH-28: a bad non-leading statement still derails the statements after it")
+def test_sqlparse_invalid_token_mid_stream_derails_followers():
+    """Strict-xfail tripwire for GH-28; drop the marker when it starts passing."""
+    from cratedb_sqlparse import sqlparse
+
+    r = sqlparse("SELECT 1; SELEC 2; SELECT 3")
+    assert len(r) == 3
+    assert r[0].exception is None
+    assert r[1].exception is not None
+    assert r[2].exception is None

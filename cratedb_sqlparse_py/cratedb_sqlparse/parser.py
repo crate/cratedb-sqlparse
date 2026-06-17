@@ -1,4 +1,5 @@
 # ruff: noqa: A005  # Module `parser` shadows a Python standard-library module
+import typing as t
 from typing import List
 
 from antlr4 import CommonTokenStream, InputStream, RecognitionException, Token
@@ -145,7 +146,8 @@ class ExceptionCollectorListener(ErrorListener):
 
 class Statement:
     """
-    Represents a CrateDB SQL statement.
+    Represents a CrateDB SQL statement. `ctx` is None when the statement was synthesized from a
+    parse error instead of a parse tree (see the recovery path in `sqlparse`).
     """
 
     def __init__(self, ctx: SqlBaseParser.StatementContext, exception: ParsingException = None):
@@ -158,6 +160,8 @@ class Statement:
         """
         Returns the String representation of the Tree in LISP format.
         """
+        if self.ctx is None:
+            return None
         return self.ctx.toStringTree(recog=self.ctx.parser)
 
     @property
@@ -165,6 +169,8 @@ class Statement:
         """
         The original query that was fed into `sqlparse`, including semicolons and comments.
         """
+        if self.ctx is None:
+            return self.exception.query if self.exception else None
         return self.ctx.parser.getTokenStream().getText()
 
     @property
@@ -172,6 +178,8 @@ class Statement:
         """
         Returns the query, comments and ';' are not included.
         """
+        if self.ctx is None:
+            return self.exception.query if self.exception else ""
         return self.ctx.parser.getTokenStream().getText(start=self.ctx.start, stop=self.ctx.stop)
 
     @property
@@ -179,6 +187,8 @@ class Statement:
         """
         Returns the type of the Statement, i.e.: 'SELECT, 'UPDATE', 'COPY TO'...
         """
+        if self.ctx is None:
+            return None
         return self.ctx.start.text
 
     def __repr__(self):
@@ -197,6 +207,17 @@ def find_suitable_error(statement, errors):
         if error_query in statement.query:
             statement.exception = error
             errors.pop(errors.index(error))
+
+
+def query_tail_after_first_statement(token_stream) -> t.Optional[str]:
+    """
+    Return the text after the first top-level `;`, or None if there is none. Scans tokens, so a
+    `;` inside a string or comment is not treated as a separator.
+    """
+    for token in token_stream.tokens:
+        if token.type == SqlBaseLexer.SEMICOLON:
+            return token.source[1].strdata[token.stop + 1 :]
+    return None
 
 
 def sqlparse(query: str, raise_exception: bool = False) -> List[Statement]:
@@ -256,6 +277,17 @@ def sqlparse(query: str, raise_exception: bool = False) -> List[Statement]:
             # generate several exceptions, and we only support one per statement so this could be
             # triggered and not be an actual error.
             pass
+
+    # Since CrateDB 6.3.2 made the leading `statement` optional, a statement whose first token is
+    # invalid produces no StatementContext and collapses the parse to []. Rebuild from the
+    # collected error, then recurse on the tail after the first `;` (GH-284). Fully-collapsed case
+    # only; a bad non-leading statement still derails its followers (GH-28).
+    if not raise_exception and not statements_context and error_listener.errors:
+        recovered = [Statement(None, exception=error_listener.errors[0])]
+        tail = query_tail_after_first_statement(stream)
+        if tail is not None and tail.strip():
+            recovered.extend(sqlparse(tail))
+        return recovered
 
     # We extract the metadata and enrich every Statement's `metadata`.
     stmt_enricher = AstBuilder()

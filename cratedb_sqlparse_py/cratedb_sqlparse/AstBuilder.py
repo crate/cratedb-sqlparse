@@ -29,6 +29,8 @@ class AstBuilder(SqlBaseParserVisitor):
 
     def enrich(self, stmt) -> None:
         self.stmt = stmt
+        if self.stmt.ctx is None:  # synthesized statement: no tree to walk
+            return
         self.visit(self.stmt.ctx)
 
     def visitTableName(self, ctx: SqlBaseParser.TableNameContext):

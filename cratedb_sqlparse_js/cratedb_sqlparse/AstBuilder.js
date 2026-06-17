@@ -42,6 +42,9 @@ export class AstBuilder extends SqlBaseParserVisitor {
      */
     enrich(stmt) {
         this.stmt = stmt
+        if (this.stmt.ctx === null || this.stmt.ctx === undefined) {
+            return  // synthesized statement: no tree to walk
+        }
         this.visit(this.stmt.ctx)
     }
 

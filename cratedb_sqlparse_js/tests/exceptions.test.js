@@ -68,7 +68,7 @@ test('Exception message is correct', () => {
         SELECT A, B, C, D FROM tbl1;
         SELECT D, A FROM tbl1 WHERE;`
     )
-    const expectedMessage = "[line 2:8 mismatched input 'SELEC' expecting {'SELECT', 'DEALLOCATE', 'FETCH', 'END', 'WITH', 'CREATE', 'ALTER', 'KILL', 'CLOSE', 'BEGIN', 'START', 'COMMIT', 'ANALYZE', 'DISCARD', 'EXPLAIN', 'SHOW', 'OPTIMIZE', 'REFRESH', 'RESTORE', 'DROP', 'INSERT', 'VALUES', 'DELETE', 'UPDATE', 'SET', 'RESET', 'COPY', 'GRANT', 'DENY', 'REVOKE', 'DECLARE'}]"
+    const expectedMessage = "[line 2:8 mismatched input 'SELEC' expecting {<EOF>, 'SELECT', 'DEALLOCATE', 'FETCH', 'END', 'WITH', 'CREATE', 'ALTER', 'KILL', 'CLOSE', 'BEGIN', 'START', 'COMMIT', 'ANALYZE', 'DISCARD', 'EXPLAIN', 'SHOW', 'OPTIMIZE', 'REFRESH', 'RESTORE', 'DROP', 'INSERT', 'VALUES', 'DELETE', 'UPDATE', 'SET', 'RESET', 'COPY', 'GRANT', 'DENY', 'REVOKE', 'DECLARE', ';'}]"
     const expectedMessageVerbose = "         \n" +
         "        SELEC 1;\n" +
         "        ^^^^^\n" +
@@ -88,7 +88,7 @@ test('White or special characters should not avoid exception catching', () => {
         `SELECT 1\t limit `,
         `SELECT 1 limit `
     ]
-    for (const stmt in stmts) {
+    for (const stmt of stmts) {
         let r = sqlparse(stmt)
         expect(r[0].exception).toBeDefined();
     }
@@ -112,7 +112,7 @@ test('Special characters should not avoid exception catching', () => {
         `SELECT 1\t limit `,
         `SELECT 1 limit `
     ]
-    for (const stmt in stmts) {
+    for (const stmt of stmts) {
         let r = sqlparse(stmt)
         expect(r[0].exception).not.toBeNull();
     }
@@ -171,4 +171,30 @@ test('Missing EOF should not block error catching', () => {
         expect(r[0].exception).toBeNull()
         expect(r[1].exception).not.toBeNull()
     }
+})
+
+test('Invalid leading token is recovered', () => {
+    // An invalid leading token must still yield a Statement carrying the exception (GH-284).
+    let r = sqlparse("SELCT 2")
+    expect(r).length(1)
+    expect(r[0].exception).not.toBeNull()
+    expect(typeof r[0].query).toBe("string")  // synthesized statement: attribute access must not throw
+    expect(r[0].type).toBeNull()
+
+    // A bad leading statement must not swallow the valid ones after it.
+    r = sqlparse("SELCT 1; SELECT 2; SELECT 3 FROM tbl WHERE;")
+    expect(r).length(3)
+    expect(r[0].exception).not.toBeNull()
+    expect(r[1].exception).toBeNull()
+    expect(r[2].exception).not.toBeNull()
+})
+
+// GH-28 tripwire: a bad non-leading statement still derails the statements after it. `test.fails`
+// flips to a failure when GH-28 is fixed — drop the marker then.
+test.fails('Invalid token mid-stream derails following statements (GH-28)', () => {
+    const r = sqlparse("SELECT 1; SELEC 2; SELECT 3")
+    expect(r).length(3)
+    expect(r[0].exception).toBeNull()
+    expect(r[1].exception).not.toBeNull()
+    expect(r[2].exception).toBeNull()
 })
