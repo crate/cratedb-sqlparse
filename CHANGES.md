@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Fix `sqlparse` dropping statements with an invalid leading token under CrateDB 6.3.2's optional-`statement` grammar; they are now recovered with their exception attached, for both the Python and JavaScript targets (#284)
+
 ## 2026/05/22 v0.0.18
 - Fix error matching issue when missing EOF
 - Set CrateDB version to 6.3.2

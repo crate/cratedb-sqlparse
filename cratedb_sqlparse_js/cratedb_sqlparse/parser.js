@@ -162,10 +162,23 @@ export class Statement {
      * @member {Metadata} metadata
      * @member {string} type - The type of query, example: 'SELECT'
      * @member {string} tree
-     * @param {object} ctx
+     * @param {object} ctx - null when the statement is synthesized from a parse error
      * @param {ParseError} exception
      */
     constructor(ctx, exception) {
+        this.ctx = ctx || null;
+        this.exception = exception || null;
+        this.metadata = new Metadata();
+
+        if (this.ctx === null) {
+            // Synthesized from a parse error: no tree, so fall back to the offending fragment.
+            this.query = this.exception ? this.exception.query : "";
+            this.originalQuery = this.exception ? this.exception.query : null;
+            this.tree = null;
+            this.type = null;
+            return;
+        }
+
         this.query = ctx.parser.getTokenStream().getText(
             new Interval(
                 ctx.start.tokenIndex,
@@ -175,9 +188,6 @@ export class Statement {
         this.originalQuery = ctx.parser.getTokenStream().getText();
         this.tree = ctx.toStringTree(null, ctx.parser);
         this.type = ctx.start.text;
-        this.ctx = ctx;
-        this.exception = exception || null;
-        this.metadata = new Metadata();
     }
 }
 
@@ -197,6 +207,22 @@ function findSuitableError(statement, errors) {
             errors.splice(errors.indexOf(error), 1);
         }
     }
+}
+
+/**
+ * Text after the first top-level `;`, or null if there is none. Scans tokens, so a `;` inside a
+ * string or comment is not treated as a separator.
+ *
+ * @param {CommonTokenStream} tokenStream
+ * @returns {string|null}
+ */
+function queryTailAfterFirstStatement(tokenStream) {
+    for (const token of tokenStream.tokens) {
+        if (token.type === SqlBaseLexer.SEMICOLON) {
+            return token.source[1].strdata.substring(token.stop + 1)
+        }
+    }
+    return null
 }
 
 /**
@@ -252,6 +278,19 @@ export function sqlparse(query, raise_exception = false) {
 
     if (errorListener.errors.length > 1) {
         console.error("Could not match errors to queries, too much ambiguity, please report it opening an issue with the query.")
+    }
+
+    // Since CrateDB 6.3.2 made the leading `statement` optional, a statement whose first token is
+    // invalid produces no StatementContext and collapses the parse to []. Rebuild from the
+    // collected error, then recurse on the tail after the first `;` (GH-284). Fully-collapsed case
+    // only; a bad non-leading statement still derails its followers (GH-28).
+    if (!raise_exception && statementsContext.length === 0 && errorListener.errors.length > 0) {
+        const recovered = [new Statement(null, errorListener.errors[0])]
+        const tail = queryTailAfterFirstStatement(stream)
+        if (tail !== null && tail.trim()) {
+            recovered.push(...sqlparse(tail))
+        }
+        return recovered
     }
 
     const stmtEnricher = new AstBuilder()
