@@ -1,5 +1,12 @@
 # cratedb-sqlparse
 
+## Archived project
+
+The CrateDB sqlparse project has been archived and is not maintained as CrateDB has no internal dependencies
+on the Python or JavaScript package.
+
+## Introduction
+
 `Antlr4` is a parser generator for reading, processing and executing text, there are several
 target languages (Java, Python, JavaScript, Dart) available. CrateDB uses the Java target.
 
